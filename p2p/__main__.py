@@ -1,22 +1,37 @@
 import socks
 
-from logger.logger import Logger
-from network.tor_network import TorService
-from p2p import Node
-from tor.tor_client import TorClient
-import time
+import stem
 import socket
+from network.tor_network import TorService
+from p2p.node import *
 
-if __name__ == '__main__':
-    logger = Logger('DeChat')
-    tor_client = TorClient()
-    tor_client.download_and_install()
-    tor_service = TorService(9051)
-    tor_service.start()
-    new = Node('127.0.0.1', 65432)  # start the node
+
+if __name__ == "__main__":
+    new = Node("", PORT, FILE_PORT)  # start the node
     new.start()
 
     socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, '127.0.0.1', 9050)
+
+    # create a new socket object
+    s = socks.socksocket(socket.AF_INET, socket.SOCK_STREAM)
+    s.settimeout(10)
+
+    tor_controller = stem.control.Controller.from_port(port=9051)
+    tor_controller.authenticate()
+
+    circuit = tor_controller.new_circuit()
+    #tor_controller.get_circuit(circuit)
+
+    #socket.socket = socks.socksocket
+    #sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    # Connect the socket to the hidden service via the Tor circuit
+    s.connect(('fsahlvmebwlqcaqmv7poqz7q3rg2u3dsqmhg4zbpj4ddjfqikk65f2qd.onion', 80))
+
+    s.send(b'test')
+    response = s.recv(1024)
+    print(response)
+
+
     print("RUNNING IN CONSOLE MODE")
     try:
         while True:
@@ -40,7 +55,7 @@ if __name__ == '__main__':
             if "connect " in cmd:
                 args = cmd.replace("connect ", "")
                 print("connect to: " + args)
-                new.connect_to(args, 65432)
+                new.connect_to(args, PORT)
 
             if "msg " in cmd:
                 args = cmd.replace("msg ", "")

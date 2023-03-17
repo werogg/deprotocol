@@ -14,6 +14,8 @@ class TorClient:
         self.process = None
 
     def download_and_install(self):
+        if os.path.isfile('tor.tar.gz'):
+            return
         response = requests.get(self.tor_binary_url)
         with open('tor.tar.gz', 'wb') as f:
             f.write(response.content)
