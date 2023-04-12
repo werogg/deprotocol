@@ -10,6 +10,10 @@ class Packet:
         self.sequence_number = sequence_number
         self.payload = payload
 
+    @property
+    def size(self):
+        return self.HEADER_LENGTH + len(self.payload)
+
     def to_bytes(self):
         payload_length = len(self.payload)
         header = struct.pack('!BBIH', self.PROTOCOL_VERSION, self.type.value, self.sequence_number, payload_length)

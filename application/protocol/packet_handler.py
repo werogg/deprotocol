@@ -25,7 +25,7 @@ class PacketHandler:
         self.receive_buffer.extend(data)
         packet = self.packet_decoder.decode_packet(self.receive_buffer)
         if packet:
-            self.receive_buffer = self.receive_buffer[packet.size():]
+            self.receive_buffer = self.receive_buffer[packet.size:]
             return packet
         return None
 
