@@ -4,7 +4,7 @@
 # most code from  http://mattscodecave.com/posts/using-python-and-upnp-to-forward-a-port
 # - adapted for command line use
 # - support multiple routers in the lan
-
+# pylint: skip-file
 import socket
 import re
 from urllib.parse import urlparse
@@ -14,6 +14,8 @@ from xml.dom.minidom import Document
 import http.client
 import time
 import sys
+
+from application.logger.logger import Logger
 
 
 def discover():
@@ -214,7 +216,7 @@ def forwardPort(
 ):
 
     if verbose:
-        print("Discovering routers...")
+        Logger.get_instance().debug("Discovering routers...")
 
     res = discover()
 

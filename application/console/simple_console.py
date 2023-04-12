@@ -1,26 +1,10 @@
-import socks
-
-from logger.logger import Logger
-from network.tor_network import TorService
-from p2p import Node
-from tor.tor_client import TorClient
 import time
-import socket
 
-if __name__ == '__main__':
-    logger = Logger('DeChat')
-    tor_client = TorClient()
-    tor_client.download_and_install()
-    tor_service = TorService(9051)
-    tor_service.start()
-    new = Node('127.0.0.1', 65432)  # start the node
-    new.start()
 
-    socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, '127.0.0.1', 9050)
-    print("RUNNING IN CONSOLE MODE")
+def read_user_input(new, tor_service):
     try:
         while True:
-            cmd = input("PYTHONP2P>")
+            cmd = input("\nDEPROTO>")
             if cmd == "help":
                 print(
                     """
@@ -35,12 +19,11 @@ if __name__ == '__main__':
                 req
                 load
                 save
+                address
                 """
                 )
             if "connect " in cmd:
                 args = cmd.replace("connect ", "")
-                print("connect to: " + args)
-                new.connect_to(args, 65432)
 
             if "msg " in cmd:
                 args = cmd.replace("msg ", "")
@@ -68,6 +51,9 @@ if __name__ == '__main__':
                 new.file_manager.refresh()
                 print(new.file_manager.files)
 
+            if cmd == "address":
+                print(f"{tor_service.get_address()}.onion")
+
             if "add " in cmd:
                 args = cmd.replace("add ", "")
                 print("Adding file: " + args)
@@ -78,7 +64,7 @@ if __name__ == '__main__':
                     print(e)
 
             if cmd == "peers":
-                print("IP: " + new.ip)
+                print("Address: " + tor_service.get_address())
                 new.debug_print(new.peers)
                 print("--------------")
                 for i in new.nodes_connected:

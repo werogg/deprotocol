@@ -5,4 +5,3 @@ __main__ = "pythonp2p"
 
 __all__ = ["node", "data_request_management", "file_transfer", "portforwardlib"]
 
-from p2p.node import Node

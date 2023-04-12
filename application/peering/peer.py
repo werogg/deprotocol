@@ -1,4 +1,8 @@
+# pylint: skip-file
+
 from pythonp2p import Node
+
+from application.logger.logger import Logger
 
 
 class PeerNode(Node):
@@ -14,4 +18,4 @@ class PeerNode(Node):
         self.connect_to(ip)
 
     def on_message(self, data, sender, private):
-        print(data)
+        Logger.get_instance().info(data)

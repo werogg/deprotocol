@@ -1,11 +1,12 @@
+# pylint: skip-file
+
 import os.path
 import socket
-import stem.process
-import stem.control
-import socks
-from pyp2p.net import Net
 
-from logger.logger import Logger
+import stem.control
+import stem.process
+
+from application.logger.logger import Logger
 
 
 class TorService:
@@ -31,7 +32,7 @@ class TorService:
                 take_ownership=True
             )
         except Exception as e:
-            print(e)
+            Logger.get_instance().error(e)
 
         self.tor_controller = stem.control.Controller.from_port(port=self.port)
         self.tor_controller.authenticate()
@@ -40,7 +41,7 @@ class TorService:
         bytes_read = self.tor_controller.get_info("traffic/read")
         bytes_written = self.tor_controller.get_info("traffic/written")
 
-        print("My Tor relay has read %s bytes and written %s." % (bytes_read, bytes_written))
+        Logger.get_instance().info(f'Tor relay has read {bytes_read} bytes and written {bytes_written}.')
 
         self.hidden_service = self.tor_controller.create_ephemeral_hidden_service(
             {'80': '127.0.0.1:65432'}, await_publication=True
@@ -50,13 +51,16 @@ class TorService:
     def stop(self):
         if self.tor_controller:
             self.tor_controller.close()
+            Logger.get_instance().info("Tor Service was closed successfully")
         if self.tor_process:
             self.tor_process.kill()
+            Logger.get_instance().warning("Tor Service process was killed!")
 
     def _print_bootstrap_lines(self, line):
         if "Bootstrapped" in line:
-            print(line)
+            Logger.get_instance().info(line)
 
+    # unused
     def connect(self, addr, port):
         circuit = self.tor_controller.new_circuit()
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -69,3 +73,6 @@ class TorService:
         s.send("test")
         response = s.recv(1024)
         print(response)
+
+    def get_address(self):
+        return self.hidden_service.service_id

@@ -1,0 +1,13 @@
+import logging
+
+import socks
+
+APP_NAME = 'DeProtocol'
+DEFAULT_LOG_LEVEL = logging.INFO
+DEBUG = True
+PROXY_HOST = '127.0.0.1'
+PROXY_PORT = 9050
+PROXY_TYPE = socks.PROXY_TYPE_SOCKS5
+
+NODE_HOST = '127.0.0.1'
+NODE_PORT = 65432
