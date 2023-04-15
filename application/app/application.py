@@ -65,7 +65,7 @@ class DeProtocol(ABC):
 
     def setup_p2p_node(self):
         # Start Node
-        self.node = Node(NODE_HOST, NODE_PORT, onion=self.tor_service.get_address())
+        self.node = Node(NODE_HOST, NODE_PORT)
         self.node.start()
 
     def start_console(self):

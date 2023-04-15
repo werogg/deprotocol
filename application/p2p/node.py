@@ -13,9 +13,6 @@ from . import portforwardlib
 from . import crypto_funcs as cf
 import ipaddress
 
-from ..logger.logger import Logger
-from ..protocol.packet_handler import PacketHandler
-
 msg_del_time = 30
 PORT = 65432
 FILE_PORT = 65433
@@ -24,7 +21,7 @@ FILE_PORT = 65433
 class NodeConnection(threading.Thread):
     def __init__(self, main_node, sock, id, host, port):
 
-        super().__init__()
+        super(NodeConnection, self).__init__()
         socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, '127.0.0.1', 9050)
 
         self.host = host
@@ -36,10 +33,10 @@ class NodeConnection(threading.Thread):
         # Variable for parsing the incoming json messages
         self.buffer = ""
 
+
         # The id of the connected node
         self.public_key = cf.load_key(id)
         self.id = id
-        self.packet_handler = PacketHandler(self.sock)
 
         self.main_node.debug_print(
             "NodeConnection.send: Started with client ("
@@ -50,8 +47,6 @@ class NodeConnection(threading.Thread):
             + str(self.port)
             + "'"
         )
-
-        self.sock.settimeout(180.0)
 
     def send(self, data):
 
@@ -71,6 +66,7 @@ class NodeConnection(threading.Thread):
         self.terminate_flag.set()
 
     def run(self):
+        self.sock.settimeout(10.0)
 
         while not self.terminate_flag.is_set():
             if time.time() - self.last_ping > self.main_node.dead_time:
@@ -83,13 +79,13 @@ class NodeConnection(threading.Thread):
                 line = self.sock.recv(4096)
 
             except socket.timeout:
-                self.main_node.debug_print("NodeConnection: timeout")
+                # self.main_node.debug_print("NodeConnection: timeout")
                 pass
 
             except Exception as e:
                 self.terminate_flag.set()
                 self.main_node.debug_print(
-                    f"NodeConnection: Socket has been terminated ({line})"
+                    "NodeConnection: Socket has been terminated (%s)" % line
                 )
                 self.main_node.debug_print(e)
 
@@ -109,7 +105,7 @@ class NodeConnection(threading.Thread):
 
                     if message == "ping":
                         self.last_ping = time.time()
-                        self.main_node.debug_print("Ping from " + self.id)
+                        # self.main_node.debug_print("ping from " + self.id)
                     else:
                         self.main_node.node_message(self, message)
 
@@ -125,18 +121,17 @@ class NodeConnection(threading.Thread):
 
 
 class Node(threading.Thread):
-    def __init__(self, host="", port=65432, file_port=65433, onion=None):
+    def __init__(self, host="", port=65432, file_port=65433):
         super(Node, self).__init__()
 
         self.terminate_flag = threading.Event()
         self.pinger = Pinger(self)  # start pinger
         self.file_manager = FileManager()
-        self.fileServer = FileServer(self, file_port)
+        #self.fileServer = fileServer(self, file_port)
         self.debug = True
-        self.onion = onion
 
         self.dead_time = (
-            180  # time to disconect from node if not pinged, nodes ping after 20s
+            45  # time to disconect from node if not pinged, nodes ping after 20s
         )
 
         self.host = host
@@ -169,12 +164,12 @@ class Node(threading.Thread):
         self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.debug_print("Initialisation of the Node on port: " + str(self.port))
         self.sock.bind((self.host, self.port))
-        self.sock.settimeout(60.0)
+        self.sock.settimeout(10.0)
         self.sock.listen(1)
 
     def debug_print(self, msg):
         if self.debug:
-            Logger.get_instance().debug(str(msg))
+            print("[debug] " + str(msg))
 
     def network_send(self, message, exc=[]):
         for i in self.nodes_connected:
@@ -200,8 +195,8 @@ class Node(threading.Thread):
 
         try:
             sock = socks.socksocket(socket.AF_INET, socket.SOCK_STREAM)
-            sock.settimeout(60)
-            self.debug_print(f"connecting to {host} port {port}")
+            sock.settimeout(10)
+            self.debug_print("connecting to %s port %s" % (host, port))
 
             tor_controller = stem.control.Controller.from_port(port=9051)
             tor_controller.authenticate()
@@ -265,7 +260,7 @@ class Node(threading.Thread):
 
     def run(self):
         self.pinger.start()
-        self.fileServer.start()
+        #self.fileServer.start()
         while (
             not self.terminate_flag.is_set()
         ):  # Check whether the thread needs to be closed
@@ -275,7 +270,6 @@ class Node(threading.Thread):
                 connected_node_id = connection.recv(2048).decode("utf-8")
                 connection.send(self.id.encode("utf-8"))
 
-                # TODO: Set correct onion address, not ip
                 if self.id != connected_node_id:
                     thread_client = self.create_new_connection(
                         connection,
@@ -479,7 +473,7 @@ class Node(threading.Thread):
             json.dump(self.peers, f)
 
     def requestFile(self, fhash):
-        if fhash not in self.requested and fhash not in self.file_manager.get_all_files():
+        if fhash not in self.requested and fhash not in self.file_manager.getallfiles():
             self.requested.append(fhash)
             self.message("req", fhash)
 
@@ -515,7 +509,7 @@ class Node(threading.Thread):
 class Pinger(threading.Thread):
     def __init__(self, parent):
         self.terminate_flag = threading.Event()
-        super().__init__()  # CAll Thread.__init__()
+        super(Pinger, self).__init__()  # CAll Thread.__init__()
         self.parent = parent
         self.dead_time = 30  # time to disconect from node if not pinged
 
@@ -523,12 +517,11 @@ class Pinger(threading.Thread):
         self.terminate_flag.set()
 
     def run(self):
-        Logger.get_instance().info("Pinger Started")
+        print("Pinger Started")
         while (
             not self.terminate_flag.is_set()
         ):  # Check whether the thread needs to be closed
             for i in self.parent.nodes_connected:
                 i.send("ping")
-                Logger.get_instance().debug(f"Ping sent to {i}, checking again in 20ms")
-            time.sleep(5)
-        Logger.get_instance().info("Pinger stopped")
+                time.sleep(20)
+        print("Pinger stopped")

@@ -24,6 +24,7 @@ def read_user_input(new, tor_service):
                 )
             if "connect " in cmd:
                 args = cmd.replace("connect ", "")
+                new.connect_to(args, port=65432)
 
             if "msg " in cmd:
                 args = cmd.replace("msg ", "")
