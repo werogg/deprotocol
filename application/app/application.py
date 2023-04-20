@@ -24,7 +24,7 @@ class DeProtocol(ABC):
         self.logger = None
         self.on_start()
 
-    def on_start(self, proxy_host='127.0.0.1', proxy_port=9050, console=True):
+    def on_start(self, proxy_host='127.0.0.1', proxy_port=9050, console=False):
         self.setup_logger()
         Logger.get_instance().info(f"Starting {APP_NAME} version {APP_VERSION}, running on {platform.system()}")
 

@@ -8,5 +8,7 @@ COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
+RUN rm -rf /app/bin
+RUN find . -type f -name '*.tar.gz' -delete
 
 CMD [ "python", "main.py" ]
