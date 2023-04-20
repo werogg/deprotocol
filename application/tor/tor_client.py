@@ -30,8 +30,12 @@ class TorUtils:
         Logger.get_instance().info("Tor Client binaries downloaded")
         with open('tor.tar.gz', 'wb') as f:
             f.write(response.content)
-        with tarfile.open('tor.tar.gz', 'r:gz') as tar:
-            members = tar.getmembers()
-            for member in tqdm(members):
-                tar.extract(member, path='bin')
-        Logger.get_instance().info('Tor Client binaries were successfully decompressed')
+
+        try:
+            with tarfile.open('tor.tar.gz', 'r:gz') as tar:
+                members = tar.getmembers()
+                for member in tqdm(members):
+                    tar.extract(member, path='bin')
+            Logger.get_instance().info('Tor Client binaries were successfully decompressed')
+        except Exception as exc:
+            Logger.get_instance().error(exc)
