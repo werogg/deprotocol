@@ -11,7 +11,7 @@ from application.network.tor_network import TorService
 from application.p2p.node import Node
 from application.settings import APP_NAME, PROXY_HOST, PROXY_PORT, PROXY_TYPE, NODE_HOST, NODE_PORT, DEBUG, \
     DEFAULT_LOG_LEVEL
-from application.tor.tor_client import TorUtils
+from application.tor.tor_client import TorClient
 from application.version import APP_VERSION
 
 
@@ -56,7 +56,7 @@ class DeProtocol(ABC):
 
     def setup_tor_client(self):
         # Download and install Tor Client
-        self.tor_client = TorUtils()
+        self.tor_client = TorClient()
         self.tor_client.download_and_install()
 
     def setup_tor_service(self):

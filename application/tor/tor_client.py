@@ -1,33 +1,27 @@
 # pylint: skip-file
 
 import os
-import platform
+import requests
 import subprocess
 import tarfile
-
-import requests
 from tqdm import tqdm
 
 from application.logger.logger import Logger
-from application.settings import TOR_BINARIES_FILENAME
-from application.settings import TOR_BINARIES_URL
 
 
-class TorUtils:
+class TorClient:
     def __init__(self):
+        self.tor_binary_url = 'https://dist.torproject.org/torbrowser/12.0.5/tor-expert-bundle-12.0.5-windows-x86_64.tar.gz'
         self.response = None
         self.process = None
 
-    @staticmethod
-    def download_and_install():
-        if os.path.isfile(TOR_BINARIES_FILENAME):
-            os.remove(TOR_BINARIES_FILENAME)
-            Logger.get_instance().warning(
-                'A tor installation was found in your system, if DeProtocol is not working please delete tor.tar.gz'
-            )
+    def download_and_install(self):
+        if os.path.isfile('tor.tar.gz'):
+            Logger.get_instance().warning(f"A tor installation was found in your system, if DeProtocol is not working "
+                                          f"please delete tor.tar.gz")
             return
-        response = requests.get(TOR_BINARIES_URL)
-        Logger.get_instance().info("Tor Client binaries downloaded")
+        response = requests.get(self.tor_binary_url)
+        Logger.get_instance().info(f"Tor Client binaries downloaded")
         with open('tor.tar.gz', 'wb') as f:
             f.write(response.content)
         with tarfile.open('tor.tar.gz', 'r:gz') as tar:
@@ -35,3 +29,12 @@ class TorUtils:
             for member in tqdm(members):
                 tar.extract(member, path='bin')
         Logger.get_instance().info('Tor Client binaries were successfully decompressed')
+
+    def run(self):
+        tor_binary_path = os.path.join(os.getcwd(), 'bin', 'tor', 'tor.exe')
+        self.process = subprocess.Popen([tor_binary_path])
+        Logger.get_instance().info("Tor Client process was started")
+
+    def stop(self):
+        self.process.kill()
+        Logger.get_instance().info("Tor Client process was stopped")
