@@ -13,6 +13,9 @@ from . import portforwardlib
 from . import crypto_funcs as cf
 import ipaddress
 
+from ..protocol import HandshakePacket
+from ..protocol.packet_handler import PacketHandler
+
 msg_del_time = 30
 PORT = 65432
 FILE_PORT = 65433
@@ -160,12 +163,13 @@ class Node(threading.Thread):
             file_port, file_port, None, None, False, "TCP", 0, "", True
         )
 
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.debug_print("Initialisation of the Node on port: " + str(self.port))
-        self.sock.bind((self.host, self.port))
-        self.sock.settimeout(10.0)
-        self.sock.listen(1)
+        self.socket.bind((self.host, self.port))
+        self.socket.settimeout(10.0)
+        self.socket.listen(1)
+        self.packet_handler = None
 
     def debug_print(self, msg):
         if self.debug:
@@ -204,9 +208,12 @@ class Node(threading.Thread):
             tor_controller.new_circuit()
 
             sock.connect((host, 80))
+            self.packet_handler = PacketHandler(sock)
 
-            sock.send(self.id.encode("utf-8"))
-            connected_node_id = sock.recv(1024).decode("utf-8")
+            handshake_packet = HandshakePacket(self.id)
+            self.packet_handler.send_packet(handshake_packet)
+            rec = self.packet_handler.receive_packet()
+            connected_node_id = rec.payload.decode("utf-8")
 
             if self.id == connected_node_id:
                 self.debug_print("Possible own ip: " + host)
@@ -265,10 +272,13 @@ class Node(threading.Thread):
             not self.terminate_flag.is_set()
         ):  # Check whether the thread needs to be closed
             try:
-                connection, client_address = self.sock.accept()
+                connection, client_address = self.socket.accept()
 
-                connected_node_id = connection.recv(2048).decode("utf-8")
-                connection.send(self.id.encode("utf-8"))
+                self.packet_handler = PacketHandler(connection)
+                rec = self.packet_handler.receive_packet()
+                connected_node_id = rec.payload.decode("utf-8")
+                handshake_packet = HandshakePacket(self.id)
+                self.packet_handler.send_packet(handshake_packet)
 
                 if self.id != connected_node_id:
                     thread_client = self.create_new_connection(
@@ -299,7 +309,7 @@ class Node(threading.Thread):
         for t in self.nodes_connected:
             t.stop()
 
-        self.sock.close()
+        self.socket.close()
         print("Node stopped")
 
     def ConnectToNodes(self):

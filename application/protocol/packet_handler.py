@@ -4,8 +4,8 @@ from application.protocol.type import PacketType
 
 
 class PacketHandler:
-    def __init__(self, socket):
-        self.socket = socket
+    def __init__(self, sock):
+        self.sock = sock
         self.receive_buffer = bytearray()
         self.send_buffer = bytearray()
         self.sequence_number = 0
@@ -15,11 +15,11 @@ class PacketHandler:
     def send_packet(self, packet):
         packet.sequence_number = self.sequence_number
         encoded_packet = self.packet_encoder.encode_packet(packet)
-        self.socket.sendall(encoded_packet)
+        self.sock.sendall(encoded_packet)
         self.sequence_number += 1
 
     def receive_packet(self):
-        data = self.socket.recv(4096)
+        data = self.sock.recv(4096)
         if not data:
             raise ConnectionError('Connection closed by peer')
         self.receive_buffer.extend(data)
@@ -30,12 +30,11 @@ class PacketHandler:
         return None
 
     def send_file(self, file_path):
-        end_file_packet = PacketFactory.create_packet(PacketType.END_FILE)
         with open(file_path, 'rb') as f:
             for data in iter(lambda: f.read(4096), b''):
                 packet = PacketFactory.create_packet(PacketType.FILE, payload=data)
                 self.send_packet(packet)
-        self.send_packet(end_file_packet)
+        self.send_packet(PacketFactory.create_packet(PacketType.END_FILE, ''))
 
     def receive_file(self, file_path):
         with open(file_path, 'wb') as f:

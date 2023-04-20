@@ -7,6 +7,7 @@ import stem.control
 import stem.process
 
 from application.logger.logger import Logger
+from application.settings import TOR_BINARIES_PATH
 
 
 class TorService:
@@ -27,7 +28,7 @@ class TorService:
                     'HiddenServiceDir': os.path.join(os.getcwd(), 'tor_hidden_service'),
                     'HiddenServicePort': '80 127.0.0.1:65432'
                 },
-                tor_cmd=os.path.join(os.getcwd(), 'bin', 'tor', 'tor.exe'),
+                tor_cmd=os.path.join(os.getcwd(), TOR_BINARIES_PATH),
                 init_msg_handler=self._print_bootstrap_lines,
                 take_ownership=True
             )

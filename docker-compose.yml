@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  node1:
+    build: .
+    working_dir: /app
+    command: python main.py
+    networks:
+      network1:
+        ipv4_address: 172.16.238.10
+
+  node2:
+    build: .
+    working_dir: /app
+    command: python main.py
+    networks:
+      network2:
+        ipv4_address: 172.16.239.10
+
+networks:
+  network1:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.16.238.0/24
+
+  network2:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.16.239.0/24
