@@ -1,0 +1,37 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.env
+.env.*
+.build/
+develop-eggs/
+dist/
+eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# pytest cache
+.pytest_cache/
+
+# Binary files
+bin/
+
+# Tor folders
+tor_data/
+tor_hidden_service/
+
+# Tor tar.gz file
+tor.tar.gz
