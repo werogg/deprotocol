@@ -1,3 +1,4 @@
+from application.protocol.packet_factory import PacketFactory
 from application.protocol.packets.packet import Packet
 from application.protocol.type import PacketType
 
@@ -13,3 +14,6 @@ class HandshakePacket(Packet):
         if packet.type != cls.TYPE:
             raise ValueError('Packet type does not match')
         return cls(packet.payload)
+
+
+PacketFactory.register_packet_type(PacketType.HANDSHAKE, 'application.protocol.packets.handshake', 'HandshakePacket')

@@ -198,9 +198,10 @@ class Node(threading.Thread):
                 return True
 
         try:
-            sock = socks.socksocket(socket.AF_INET, socket.SOCK_STREAM)
-            sock.settimeout(10)
+            sock = socks.socksocket()
+            sock.settimeout(60)
             self.debug_print("connecting to %s port %s" % (host, port))
+            sock.setproxy(socks.PROXY_TYPE_SOCKS5, "localhost", 9050, True)
 
             tor_controller = stem.control.Controller.from_port(port=9051)
             tor_controller.authenticate()

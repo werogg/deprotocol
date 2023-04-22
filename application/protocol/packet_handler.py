@@ -23,8 +23,7 @@ class PacketHandler:
         if not data:
             raise ConnectionError('Connection closed by peer')
         self.receive_buffer.extend(data)
-        packet = self.packet_decoder.decode_packet(self.receive_buffer)
-        if packet:
+        if packet := self.packet_decoder.decode_packet(self.receive_buffer):
             self.receive_buffer = self.receive_buffer[packet.size:]
             return packet
         return None

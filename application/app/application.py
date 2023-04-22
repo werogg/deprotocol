@@ -11,7 +11,7 @@ from application.network.tor_network import TorService
 from application.p2p.node import Node
 from application.settings import APP_NAME, PROXY_HOST, PROXY_PORT, PROXY_TYPE, NODE_HOST, NODE_PORT, DEBUG, \
     DEFAULT_LOG_LEVEL
-from application.tor.tor_client import TorUtils
+from application.utils.tor_utils import TorUtils
 from application.version import APP_VERSION
 
 
@@ -46,10 +46,7 @@ class DeProtocol(ABC):
         self.setup_p2p_node()
 
     def setup_logger(self):
-        log_level = DEFAULT_LOG_LEVEL
-        if DEBUG:
-            log_level = logging.DEBUG
-
+        log_level = logging.DEBUG if DEBUG else DEFAULT_LOG_LEVEL
         # Set up logger
         self.logger = Logger(name=APP_NAME, level=log_level)
         Logger.get_instance().info(f"Logger started correctly! Status: {logging.getLevelName(log_level)}")

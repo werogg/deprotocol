@@ -47,10 +47,15 @@ def serialize_key(key):
     return key
 
 
-def sign(message, private_key):
-    """ Write a signature using a private key """
+def get_digest(message):
     digest = SHA256.new()
     digest.update(str(message).encode("utf-8"))
+    return digest
+
+
+def sign(message, private_key):
+    """ Write a signature using a private key """
+    digest = get_digest(message)
     signer = PKCS1_v1_5.new(private_key)
     sig = signer.sign(digest)
 
@@ -59,9 +64,6 @@ def sign(message, private_key):
 
 def verify(message, sig, key):
     """ Verify a signature using a public key """
-    digest = SHA256.new()
-    digest.update(str(message).encode("utf-8"))
+    digest = get_digest(message)
     verifier = PKCS1_v1_5.new(key)
-    verified = verifier.verify(digest, base64.b64decode(sig))  # pylint: disable=not-callable
-
-    return verified
+    return verifier.verify(digest, base64.b64decode(sig))
