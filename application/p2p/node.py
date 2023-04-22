@@ -7,14 +7,16 @@ import hashlib
 
 import socks
 import stem
+import upnpclient
 
-from .file_transfer import FileDownloader, FileServer, FileManager
-from . import portforwardlib
-from . import crypto_funcs as cf
+from .file_transfer import FileDownloader, FileManager
+from ..logger.logger import Logger
+from ..utils import crypto_funcs as cf
 import ipaddress
 
 from ..protocol import HandshakePacket
 from ..protocol.packet_handler import PacketHandler
+from ..utils import portforwardlib
 
 msg_del_time = 30
 PORT = 65432
@@ -36,16 +38,14 @@ class NodeConnection(threading.Thread):
         # Variable for parsing the incoming json messages
         self.buffer = ""
 
-
         # The id of the connected node
         self.public_key = cf.load_key(id)
         self.id = id
 
         self.main_node.debug_print(
             "NodeConnection.send: Started with client ("
-            + self.id
-            + ") '"
             + self.host
+            + ") '"
             + ":"
             + str(self.port)
             + "'"
@@ -104,7 +104,7 @@ class NodeConnection(threading.Thread):
                 index = self.buffer.find("-TSN")
                 while index > 0:
                     message = self.buffer[0:index]
-                    self.buffer = self.buffer[index + 4 : :]
+                    self.buffer = self.buffer[index + 4::]
 
                     if message == "ping":
                         self.last_ping = time.time()
@@ -130,7 +130,7 @@ class Node(threading.Thread):
         self.terminate_flag = threading.Event()
         self.pinger = Pinger(self)  # start pinger
         self.file_manager = FileManager()
-        #self.fileServer = fileServer(self, file_port)
+        # self.fileServer = fileServer(self, file_port)
         self.debug = True
 
         self.dead_time = (
@@ -158,14 +158,13 @@ class Node(threading.Thread):
         self.local_ip = socket.gethostbyname(hostname)
 
         self.banned = []
-        portforwardlib.forwardPort(port, port, None, None, False, "TCP", 0, "", True)
-        portforwardlib.forwardPort(
-            file_port, file_port, None, None, False, "TCP", 0, "", True
-        )
+        #portforwardlib.forwardPort(port, port, None, None, False, "TCP", 0, "", True)
+        # portforwardlib.forwardPort(file_port, file_port, None, None, False, "TCP", 0, "", True)
+
 
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.debug_print("Initialisation of the Node on port: " + str(self.port))
+        Logger.get_instance().info("Initialisation of the Node on port: " + str(self.port))
         self.socket.bind((self.host, self.port))
         self.socket.settimeout(10.0)
         self.socket.listen(1)
@@ -173,7 +172,7 @@ class Node(threading.Thread):
 
     def debug_print(self, msg):
         if self.debug:
-            print("[debug] " + str(msg))
+            Logger.get_instance().info(str(msg))
 
     def network_send(self, message, exc=[]):
         for i in self.nodes_connected:
@@ -268,9 +267,9 @@ class Node(threading.Thread):
 
     def run(self):
         self.pinger.start()
-        #self.fileServer.start()
+        # self.fileServer.start()
         while (
-            not self.terminate_flag.is_set()
+                not self.terminate_flag.is_set()
         ):  # Check whether the thread needs to be closed
             try:
                 connection, client_address = self.socket.accept()
@@ -349,11 +348,11 @@ class Node(threading.Thread):
 
     def check_validity(self, msg):
         if not (
-            "time" in msg
-            and "type" in msg
-            and "snid" in msg
-            and "sig" in msg
-            and "rnid" in msg
+                "time" in msg
+                and "type" in msg
+                and "snid" in msg
+                and "sig" in msg
+                and "rnid" in msg
         ):
             return False
 
@@ -460,11 +459,11 @@ class Node(threading.Thread):
 
     def check_ip_to_connect(self, ip):
         if (
-            ip not in self.peers
-            and ip != ""
-            and ip != self.ip
-            and ip != self.local_ip
-            and ip not in self.banned
+                ip not in self.peers
+                and ip != ""
+                and ip != self.ip
+                and ip != self.local_ip
+                and ip not in self.banned
         ):
             return True
         else:
@@ -498,13 +497,13 @@ class Node(threading.Thread):
         self.file_manager.download_path = path
 
     def node_connected(self, node):
-        self.debug_print("node_connected: " + node.id)
+        self.debug_print("Connected to node: " + node.host)
         if node.host not in self.peers:
             self.peers.append(node.host)
         self.send_peers()
 
     def node_disconnected(self, node):
-        self.debug_print("node_disconnected: " + node.id)
+        self.debug_print("Disconnected from: " + node.host)
         if node.host in self.peers:
             self.peers.remove(node.host)
 
@@ -528,11 +527,11 @@ class Pinger(threading.Thread):
         self.terminate_flag.set()
 
     def run(self):
-        print("Pinger Started")
+        Logger.get_instance().info("Pinger Started")
         while (
-            not self.terminate_flag.is_set()
+                not self.terminate_flag.is_set()
         ):  # Check whether the thread needs to be closed
             for i in self.parent.nodes_connected:
                 i.send("ping")
                 time.sleep(20)
-        print("Pinger stopped")
+        Logger.get_instance().info("Pinger stopped")

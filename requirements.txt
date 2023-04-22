@@ -19,3 +19,4 @@ stem==1.8.1
 tomli==2.0.1
 tqdm==4.65.0
 urllib3==1.26.15
+upnpclient~=1.0.3
