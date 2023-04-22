@@ -47,7 +47,7 @@ class TorService:
         self.hidden_service = self.tor_controller.create_ephemeral_hidden_service(
             {'80': '127.0.0.1:65432'}, await_publication=True
         )
-        Logger.get_instance().info(f"Hidden service created with address: {self.hidden_service.service_id}")
+        Logger.get_instance().info(f"Hidden service created with address: {self.hidden_service.service_id}.onion")
 
     def stop(self):
         if self.tor_controller:

@@ -4,7 +4,7 @@ import platform
 import socks
 
 APP_NAME = 'DeProtocol'
-DEFAULT_LOG_LEVEL = logging.INFO
+DEFAULT_LOG_LEVEL = logging.DEBUG
 DEBUG = True
 USE_CONSOLE = True
 PROXY_HOST = '127.0.0.1'

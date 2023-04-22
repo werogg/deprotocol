@@ -1,39 +1,18 @@
-from application.protocol.packets.end import EndConnectionPacket
-from application.protocol.packets.file import FileTransferPacket
-from application.protocol.packets.handshake import HandshakePacket
-from application.protocol.packets.keepalive import KeepAlivePacket
-from application.protocol.packets.message import MessagePacket
-from application.protocol.type import PacketType
+import importlib
 
 
 class PacketFactory:
-
-    _creators = {}
-
-    @classmethod
-    def register_packet_type(cls, packet_type, creator_fn):
-        cls._creators[packet_type] = creator_fn
+    _packet_classes = {}
 
     @classmethod
-    def create_packet_abs(cls, packet_type, payload):
-        creator_fn = cls._creators.get(packet_type)
-        if not creator_fn:
-            raise ValueError('Invalid packet type')
-        return creator_fn(payload)
+    def register_packet_type(cls, packet_type, module_path, class_name):
+        cls._packet_classes[packet_type] = (module_path, class_name)
 
     @staticmethod
     def create_packet(packet_type, payload):
-        if packet_type == PacketType.HANDSHAKE:
-            return HandshakePacket(payload)
-        elif packet_type == PacketType.MESSAGE:
-            sequence_number, message = payload
-            return MessagePacket(sequence_number, message)
-        elif packet_type == PacketType.FILE:
-            file_data = payload
-            return FileTransferPacket(file_data)
-        elif packet_type == PacketType.KEEP_ALIVE:
-            return KeepAlivePacket()
-        elif packet_type == PacketType.END_CONNECTION:
-            return EndConnectionPacket()
-        else:
+        if packet_type not in PacketFactory._packet_classes:
             raise ValueError('Invalid packet type')
+        module_path, class_name = PacketFactory._packet_classes[packet_type]
+        module = importlib.import_module(module_path)
+        packet_class = getattr(module, class_name)
+        return packet_class(payload)

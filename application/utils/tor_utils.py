@@ -14,10 +14,6 @@ from application.settings import TOR_BINARIES_URL
 
 
 class TorUtils:
-    def __init__(self):
-        self.response = None
-        self.process = None
-
     @staticmethod
     def download_and_install():
         if os.path.isfile(TOR_BINARIES_FILENAME):
