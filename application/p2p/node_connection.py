@@ -5,6 +5,7 @@ import time
 
 import socks
 
+from application.logger.logger import Logger
 from application.utils import crypto_funcs as cf
 
 
@@ -14,8 +15,8 @@ class NodeConnection(threading.Thread):
         super(NodeConnection, self).__init__()
         socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, '127.0.0.1', 9050)
 
-        self.host = host
-        self.port = port
+        self.connected_host = host
+        self.connected_port = port
         self.main_node = main_node
         self.sock = sock
         self.terminate_flag = threading.Event()
@@ -27,12 +28,12 @@ class NodeConnection(threading.Thread):
         self.public_key = cf.load_key(id)
         self.id = id
 
-        self.main_node.debug_print(
+        Logger.get_instance().info(
             "NodeConnection.send: Started with client ("
-            + self.host
+            + self.connected_host
             + ") '"
             + ":"
-            + str(self.port)
+            + str(self.connected_port)
             + "'"
         )
 
@@ -43,23 +44,23 @@ class NodeConnection(threading.Thread):
             self.sock.sendall(data.encode("utf-8"))
 
         except Exception as e:
-            self.main_node.debug_print(
+            Logger.get_instance().error(
                 "NodeConnection.send: Unexpected ercontent/ror:"
                 + str(sys.exc_info()[0])
             )
-            self.main_node.debug_print(f"Exception: {str(e)}")
+            Logger.get_instance().error(f"Exception: {str(e)}")
             self.terminate_flag.set()
 
     def stop(self):
         self.terminate_flag.set()
 
     def run(self):
-        self.sock.settimeout(10.0)
+        self.sock.settimeout(60.0)
 
         while not self.terminate_flag.is_set():
             if time.time() - self.last_ping > self.main_node.dead_time:
                 self.terminate_flag.set()
-                print(f"node{self.id}is dead")
+                Logger.get_instance().warning(f"node{self.id} is dead")
 
             line = ""
 
@@ -72,10 +73,10 @@ class NodeConnection(threading.Thread):
 
             except Exception as e:
                 self.terminate_flag.set()
-                self.main_node.debug_print(
+                Logger.get_instance().error(
                     f"NodeConnection: Socket has been terminated ({line})"
                 )
-                self.main_node.debug_print(e)
+                Logger.get_instance().error(e)
 
             if line != "":
                 try:
@@ -104,5 +105,5 @@ class NodeConnection(threading.Thread):
         self.main_node.node_disconnected(self)
         self.sock.settimeout(None)
         self.sock.close()
-        del self.main_node.nodes_connected[self.main_node.nodes_connected.index(self)]
+        del self.main_node.node_connections[self.main_node.node_connections.index(self)]
         time.sleep(1)

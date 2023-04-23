@@ -8,7 +8,7 @@ import threading
 from application.console.curses_handler import CursesHandler
 from application.console.log_handler import QueueHandler
 from application.logger.logger import Logger
-from application.p2p.node import Node
+from application.p2p.deprecated_node import Node
 
 
 class DeShell(cmd.Cmd):

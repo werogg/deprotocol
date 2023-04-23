@@ -32,7 +32,5 @@ class DeProtocol(ABC):
 
         Logger.get_instance().info(f"Starting {APP_NAME} version {APP_VERSION}, running on {platform.system()}")
 
-    def set_console_props(self):
-        node = self.setups['p2p'].node
-        tor = self.setups['tor'].tor_service
-        # do something with node_connect_command and tor_get_address_command
+    def on_stop(self):
+        pass

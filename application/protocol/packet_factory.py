@@ -9,7 +9,7 @@ class PacketFactory:
         cls._packet_classes[packet_type] = (module_path, class_name)
 
     @staticmethod
-    def create_packet(packet_type, payload):
+    def create_packet(packet_type, payload=''):
         if packet_type not in PacketFactory._packet_classes:
             raise ValueError('Invalid packet type')
         module_path, class_name = PacketFactory._packet_classes[packet_type]

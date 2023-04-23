@@ -19,7 +19,7 @@ class Pinger(threading.Thread):
         while (
                 not self.terminate_flag.is_set()
         ):  # Check whether the thread needs to be closed
-            for i in self.parent.nodes_connected:
+            for i in self.parent.node_connections:
                 i.send("ping")
                 time.sleep(20)
         Logger.get_instance().info("Pinger stopped")

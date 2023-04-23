@@ -3,12 +3,11 @@ from enum import Enum
 
 class PacketType(Enum):
     HANDSHAKE = 0
-    PUBLIC_KEY = 1
-    MESSAGE = 2
-    FILE = 3
-    END_FILE = 4
-    KEEP_ALIVE = 5
-    END_CONNECTION = 6
+    MESSAGE = 1
+    FILE = 2
+    END_FILE = 3
+    KEEP_ALIVE = 4
+    END_CONNECTION = 5
 
     @staticmethod
     def from_int(int_value):

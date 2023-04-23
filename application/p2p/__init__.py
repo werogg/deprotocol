@@ -3,5 +3,5 @@ __author__ = "GianisTsol"
 __license__ = "GNU 3.0"
 __main__ = "pythonp2p"
 
-__all__ = ["node", "data_request_management", "file_transfer", "portforwardlib"]
+__all__ = ["deprecated_node.py", "data_request_management", "file_transfer", "portforwardlib"]
 

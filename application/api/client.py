@@ -1,6 +1,6 @@
 from application.api.handlers.message_handler import MessageHandler
 from application.app.application import DeProtocol
-from application.p2p.node import PORT
+from application.p2p.deprecated_node import PORT
 
 
 class Client:
@@ -13,10 +13,10 @@ class Client:
         self.app.on_start(proxy_host, proxy_port)
 
     def get_onion_address(self):
-        return self.app.node.host
+        return self.app.node.connected_host
 
     def get_port(self):
-        return self.app.node.port
+        return self.app.node.connected_port
 
     def connect(self, host, port=PORT):
         self.app.node.connect_to(host, port)
