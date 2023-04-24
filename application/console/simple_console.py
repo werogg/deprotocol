@@ -17,10 +17,10 @@ class DeConsole(threading.Thread):
             try:
                 self.handle_console()
             except KeyboardInterrupt:
-                Logger.get_logger().info("User requested stopping the protocol, stopping!")
+                Logger.get_logger().error("User requested stopping the protocol, stopping!")
                 self.stop()
             except Exception as exc:
-                Logger.get_logger().info(f"An exception is stopping DeProtocol! ({exc})")
+                Logger.get_logger().error(f"An exception is stopping DeProtocol! ({exc})")
                 self.stop()
         Logger.get_logger().info("DeProtocol successfully closed, see you soon!")
 

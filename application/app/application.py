@@ -16,7 +16,11 @@ class DeProtocol(ABC):
 
     def __init__(self):
         self.setups = {}
-        self.on_start()
+
+        try:
+            self.on_start()
+        except KeyboardInterrupt:
+            Logger.get_logger().error("User requested stopping the protocol, stopping!")
 
     def on_start(self, proxy_host='127.0.0.1', proxy_port=9050):
         self.setups = {
