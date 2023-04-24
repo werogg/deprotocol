@@ -1,11 +1,11 @@
 from unittest.mock import MagicMock
-from application.protocol.packets.end import EndConnectionPacket
-from application.protocol.packets.file import FileTransferPacket
-from application.protocol.packets.handshake import HandshakePacket
-from application.protocol.packets.keepalive import KeepAlivePacket
-from application.protocol.packets.message import MessagePacket
-from application.protocol.type import PacketType
-from application.protocol.packet_factory import PacketFactory
+from deprotocol.protocol.packets.end import EndConnectionPacket
+from deprotocol.protocol.packets.file import FileTransferPacket
+from deprotocol.protocol.packets.handshake import HandshakePacket
+from deprotocol import KeepAlivePacket
+from deprotocol.protocol.packets.message import MessagePacket
+from deprotocol.protocol.type import PacketType
+from deprotocol import PacketFactory
 
 
 class TestPacketFactory:
