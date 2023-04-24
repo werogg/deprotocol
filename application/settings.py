@@ -4,8 +4,6 @@ import platform
 import socks
 
 APP_NAME = 'DeProtocol'
-DEFAULT_LOG_LEVEL = logging.DEBUG
-DEBUG = True
 USE_CONSOLE = True
 PROXY_HOST = '127.0.0.1'
 PROXY_PORT = 9050
@@ -13,6 +11,13 @@ PROXY_TYPE = socks.PROXY_TYPE_SOCKS5
 
 NODE_HOST = '127.0.0.1'
 NODE_PORT = 65432
+
+DEBUG = True
+
+if TRACE := True:
+    LOG_LEVEL = TRACE
+else:
+    LOG_LEVEL = logging.DEBUG if DEBUG else logging.INFO
 
 system_os = platform.system()
 

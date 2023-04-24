@@ -33,7 +33,7 @@ class TorService:
                 take_ownership=True
             )
         except Exception as e:
-            Logger.get_instance().error(e)
+            Logger.get_logger().error(e)
 
         self.tor_controller = stem.control.Controller.from_port(port=self.port)
         self.tor_controller.authenticate()
@@ -42,24 +42,24 @@ class TorService:
         bytes_read = self.tor_controller.get_info("traffic/read")
         bytes_written = self.tor_controller.get_info("traffic/written")
 
-        Logger.get_instance().info(f'Tor relay has read {bytes_read} bytes and written {bytes_written}.')
+        Logger.get_logger().trace(f'tor_traffic: Tor relay has read {bytes_read} bytes and written {bytes_written}.')
 
         self.hidden_service = self.tor_controller.create_ephemeral_hidden_service(
             {'80': '127.0.0.1:65432'}, await_publication=True
         )
-        Logger.get_instance().info(f"Hidden service created with address: {self.hidden_service.service_id}.onion")
+        Logger.get_logger().debug(f"Hidden service created with address: {self.hidden_service.service_id}.onion")
 
     def stop(self):
         if self.tor_controller:
             self.tor_controller.close()
-            Logger.get_instance().info("Tor Service was closed successfully")
+            Logger.get_logger().info("Tor Service was closed successfully")
         if self.tor_process:
             self.tor_process.kill()
-            Logger.get_instance().warning("Tor Service process was killed!")
+            Logger.get_logger().warning("Tor Service process was killed!")
 
     def _print_bootstrap_lines(self, line):
         if "Bootstrapped" in line:
-            Logger.get_instance().info(line)
+            Logger.get_logger().debug(line)
 
     # unused
     def connect(self, addr, port):

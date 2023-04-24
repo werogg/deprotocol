@@ -1,55 +1,44 @@
 """ Module providing logger class to handle multiple logging functionalities in singleton"""
+import datetime
 import logging
-from stem.util import log as stem_log
+import os
+
+from charset_normalizer.constant import TRACE
+
+from application.settings import APP_NAME
+from application.settings import LOG_LEVEL
 
 
 class Logger:
     """ Represents a Logger object handles logging functionalities executed as a singleton"""
     _instance = None
 
-    def __init__(self, name, level=logging.INFO, fmt='[%(asctime)s] %(levelname)s: %(message)s',
+    def __init__(self, name, level=LOG_LEVEL, fmt='[%(asctime)s] %(levelname)s: %(message)s',
                  datefmt='%Y-%m-%d %H:%M:%S'):
         self.logger = logging.getLogger(name)
         self.logger.setLevel(level)
-        formatter = logging.Formatter(fmt=fmt, datefmt=datefmt)
 
-        # Check if the root logger already has a console handler
-        root_logger = logging.getLogger('')
-        if not root_logger.handlers:
-            console_handler = logging.StreamHandler()
-            console_handler.setFormatter(formatter)
-            root_logger.addHandler(console_handler)
+        if not os.path.exists('logs'):
+            os.makedirs('logs')
 
-        #stem_logger = stem_log.get_logger()
-        #stem_logger.propagate = False
+        logging.addLevelName(TRACE, 'TRACE')
+        setattr(self.logger, 'trace', lambda message, *args: self.logger.log(TRACE, message, *args))
 
         console_handler = logging.StreamHandler()
+        console_handler.setLevel(level)
+
+        formatter = logging.Formatter(fmt=fmt, datefmt=datefmt)
         console_handler.setFormatter(formatter)
+        self.logger.addHandler(console_handler)
 
-        #stem_logger.addHandler(logging.StreamHandler())
-
-    def level(self, level="trace"):
-        self.logger.setLevel(level)
-
-    def info(self, msg, *args, **kwargs):
-        """ Information prints in logging terms """
-        self.logger.info(msg, *args, **kwargs)
-
-    def warning(self, msg, *args, **kwargs):
-        """ Warning prints in logging terms """
-        self.logger.warning(msg, *args, **kwargs)
-
-    def error(self, msg, *args, **kwargs):
-        """ Error prints in logging terms"""
-        self.logger.error(msg, *args, **kwargs)
-
-    def debug(self, msg, *args, **kwargs):
-        """ Debug prints in logging terms """
-        self.logger.debug(msg, *args, **kwargs)
+        timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+        file_handler = logging.FileHandler(f'logs/{name}_{timestamp}.log')
+        file_handler.setFormatter(formatter)
+        self.logger.addHandler(file_handler)
 
     @classmethod
-    def get_instance(cls):
+    def get_logger(cls):
         """ Singleton method to get the Logger instance """
         if not cls._instance:
-            cls._instance = cls('DeChat')
-        return cls._instance
+            cls._instance = cls(name=APP_NAME, level=LOG_LEVEL)
+        return cls._instance.logger

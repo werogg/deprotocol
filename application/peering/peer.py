@@ -18,4 +18,4 @@ class PeerNode(Node):
         self.connect_to(ip)
 
     def on_message(self, data, sender, private):
-        Logger.get_instance().info(data)
+        Logger.get_logger().info(data)

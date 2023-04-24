@@ -13,4 +13,4 @@ class P2PNodeSetup(SetupABC):
         # Start Node
         self.node = Node(self.node_host, self.node_port)
         self.node.start()
-        Logger.get_instance().info(f"Node started correctly! Host:Port -> {self.node_host}:{self.node_port}")
+        Logger.get_logger().info(f"Node started correctly! Host:Port -> {self.node_host}:{self.node_port}")

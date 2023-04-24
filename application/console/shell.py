@@ -24,7 +24,7 @@ class DeShell(cmd.Cmd):
         self.logwin = None
         self.cmdwin = None
 
-        logger = Logger.get_instance().logger
+        logger = Logger.get_logger().logger
         logger.addHandler(self.queue_handler)
 
 
@@ -32,19 +32,19 @@ class DeShell(cmd.Cmd):
         pass
 
     def do_sayhello(self, args):
-        Logger.get_instance().info("Hello!")
+        Logger.get_logger().info("Hello!")
 
     def do_connect(self, args):
-        Logger.get_instance().info("connect to: " + args)
+        Logger.get_logger().info("connect to: " + args)
         self.node.connect_to(args, 65432)
 
     def do_msg(self, args):
         message = "msg " + args
-        Logger.get_instance().info("sent message: " + message)
+        Logger.get_logger().info("sent message: " + message)
         self.node.message(message)
 
     def do_address(self, args):
-        Logger.get_instance().info(f"address: {self.node.onion}")
+        Logger.get_logger().info(f"address: {self.node.onion}")
 
     def do_exit(self, arg):
         return True
@@ -75,7 +75,7 @@ class DeShell(cmd.Cmd):
                 self.logwin.addstr(line + '\n')
                 self.logwin.refresh()
 
-                logger = Logger.get_instance().logger
+                logger = Logger.get_logger().logger
                 while not logger.handlers[0].queue.empty():
                     log_record = logger.handlers[0].queue.get()
                     log_message = logger.handlers[0].format(log_record)
@@ -102,7 +102,7 @@ class DeShell(cmd.Cmd):
         self.cmdwin = self.stdscr.subwin(1, width, height - 1, 0)
 
         curses_handler = CursesHandler(self.logwin)
-        Logger.get_instance().logger.addHandler(curses_handler)
+        Logger.get_logger().logger.addHandler(curses_handler)
 
         # Start the logging thread
         log_thread = threading.Thread(target=self.log_loop)

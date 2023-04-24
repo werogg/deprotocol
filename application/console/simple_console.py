@@ -17,12 +17,12 @@ class DeConsole(threading.Thread):
             try:
                 self.handle_console()
             except KeyboardInterrupt:
-                Logger.get_instance().info("User requested stopping the protocol, stopping!")
+                Logger.get_logger().info("User requested stopping the protocol, stopping!")
                 self.stop()
             except Exception as exc:
-                Logger.get_instance().info(f"An exception is stopping DeProtocol! ({exc})")
+                Logger.get_logger().info(f"An exception is stopping DeProtocol! ({exc})")
                 self.stop()
-        Logger.get_instance().info("DeProtocol successfully closed, see you soon!")
+        Logger.get_logger().info("DeProtocol successfully closed, see you soon!")
 
     def stop(self):
         self.terminate_flag.set()
@@ -46,7 +46,7 @@ class DeConsole(threading.Thread):
 
         if "msg " in cmd:
             args = cmd.replace("msg ", "")
-            Logger.get_instance().info(f"Sent message: {args}")
+            Logger.get_logger().info(f"Sent message: {args}")
             self.node.message("msg", args)
 
         if cmd == "stop":
@@ -71,7 +71,7 @@ class DeConsole(threading.Thread):
 
     def print_peers(self):
         print(f"Address: {self.tor_service.get_address()}")
-        Logger.get_instance().info(self.node.peers)
+        Logger.get_logger().info(self.node.peers)
         print("--------------")
         for i in self.node.nodes_connected:
             print(

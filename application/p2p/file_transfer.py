@@ -35,11 +35,11 @@ class FileManager:
                     hasher.update(chunk)
             return hasher.hexdigest()
         except FileNotFoundError:
-            Logger.get_instance().error(f'File not found: {filepath}')
+            Logger.get_logger().error(f'File not found: {filepath}')
         except PermissionError:
-            Logger.get_instance().error(f'Permission denied: {filepath}')
+            Logger.get_logger().error(f'Permission denied: {filepath}')
         except OSError as exc:
-            Logger.get_instance().error(f'OS error while hashing file {filepath}: {exc}')
+            Logger.get_logger().error(f'OS error while hashing file {filepath}: {exc}')
         return None
 
     def refresh(self):
@@ -143,7 +143,7 @@ class FileServer(threading.Thread):
 
     def run(self):
         """ Starts the file server """
-        Logger.get_instance().info("File Server Started")
+        Logger.get_logger().info("File Server Started")
         while (
                 not self.terminate_flag.is_set()
         ):  # Check whether the thread needs to be closed
@@ -156,7 +156,7 @@ class FileServer(threading.Thread):
                     conn.recv(4096).decode("utf-8")
                 )
 
-                Logger.get_instance().info("Sending file: " + file_requested)
+                Logger.get_logger().info("Sending file: " + file_requested)
                 new_thread = FileClientThread(
                     ip, port, conn, file_requested, self.file_manager
                 )
@@ -175,7 +175,7 @@ class FileServer(threading.Thread):
 
         for thread in self.threads:
             thread.join()
-        Logger.get_instance().info("File Server stopped")
+        Logger.get_logger().info("File Server stopped")
 
 
 class FileDownloader(threading.Thread): # pylint: disable=too-many-instance-attributes

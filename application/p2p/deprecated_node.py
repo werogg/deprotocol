@@ -61,7 +61,7 @@ class Node(threading.Thread):
 
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        Logger.get_instance().info("Initialisation of the Node on port: " + str(self.port))
+        Logger.get_logger().info("Initialisation of the Node on port: " + str(self.port))
         self.socket.bind((self.host, self.port))
         self.socket.settimeout(10.0)
         self.socket.listen(1)
@@ -69,7 +69,7 @@ class Node(threading.Thread):
 
     def debug_print(self, msg):
         if self.debug:
-            Logger.get_instance().info(str(msg))
+            Logger.get_logger().info(str(msg))
 
     def network_send(self, message, exc=[]):
         for i in self.nodes_connected:

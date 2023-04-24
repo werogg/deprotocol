@@ -37,7 +37,7 @@ class Node(threading.Thread):
         self.pinger = Pinger(self).start()
 
     def node_connected(self, node):
-        Logger.get_instance().info(f"Connected to node: {node.connected_host}")
+        Logger.get_logger().info(f"Connected to node: {node.connected_host}")
         if node.connected_host not in self.peers:
             self.peers.append(node.connected_host)
         # self.send_peers()
@@ -53,9 +53,9 @@ class Node(threading.Thread):
                     continue
                 except socket.error as exc:
                     if exc.errno == errno.ECONNRESET:
-                        Logger.get_instance().error("SocketClosed: %s" % str(exc))
+                        Logger.get_logger().error("SocketClosed: %s" % str(exc))
                 except Exception as exc:
-                    Logger.get_instance().error(exc)
+                    Logger.get_logger().error(exc)
 
     def connect(self, host, port=PORT):
         if self.is_valid_address(host):
@@ -67,7 +67,7 @@ class Node(threading.Thread):
             tor_controller.authenticate()
             tor_controller.new_circuit()
 
-            Logger.get_instance().info(f"connecting to {host} port {port}")
+            Logger.get_logger().info(f"connecting to {host} port {port}")
 
             sock.connect((host, 80))
 
@@ -80,7 +80,7 @@ class Node(threading.Thread):
 
         for node in self.node_connections:
             if node.connected_host == self.host:
-                Logger.get_instance().info("Already connected with this node.")
+                Logger.get_logger().info("Already connected with this node.")
                 return False
 
         return True
@@ -103,7 +103,7 @@ class Node(threading.Thread):
         try:
             json.loads(data)
         except json.decoder.JSONDecodeError:
-            Logger.get_instance().error(f"Error loading message from {node.id}")
+            Logger.get_logger().error(f"Error loading message from {node.id}")
             return
         self.data_handler(json.loads(data), [node.connected_host, self.host])
 
@@ -139,7 +139,7 @@ class Node(threading.Thread):
             return False
 
         if not cf.verify(msg["data"], msg["sig"], cf.load_key(msg["snid"])):
-            Logger.get_instance().info(
+            Logger.get_logger().info(
                 f"Error validating signature of message from {msg['snid']}"
             )
             return False
@@ -159,7 +159,7 @@ class Node(threading.Thread):
             return False
 
     def on_message(self, data, sender, private):
-        Logger.get_instance().info("Incomig Message: " + data)
+        Logger.get_logger().info("Incomig Message: " + data)
 
     def data_handler(self, dta, n):
         if not Node.check_validity(dta):
@@ -177,6 +177,6 @@ class Node(threading.Thread):
             self.on_message(data, dta["snid"], bool(dta["rnid"]))
 
     def node_disconnected(self, node):
-        Logger.get_instance().info("Disconnected from: " + node.connected_host)
+        Logger.get_logger().info("Disconnected from: " + node.connected_host)
         if node.connected_host in self.peers:
             self.peers.remove(node.connected_host)

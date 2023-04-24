@@ -28,7 +28,7 @@ class NodeConnection(threading.Thread):
         self.public_key = cf.load_key(id)
         self.id = id
 
-        Logger.get_instance().info(
+        Logger.get_logger().info(
             "NodeConnection.send: Started with client ("
             + self.connected_host
             + ") '"
@@ -44,11 +44,11 @@ class NodeConnection(threading.Thread):
             self.sock.sendall(data.encode("utf-8"))
 
         except Exception as e:
-            Logger.get_instance().error(
+            Logger.get_logger().error(
                 "NodeConnection.send: Unexpected ercontent/ror:"
                 + str(sys.exc_info()[0])
             )
-            Logger.get_instance().error(f"Exception: {str(e)}")
+            Logger.get_logger().error(f"Exception: {str(e)}")
             self.terminate_flag.set()
 
     def stop(self):
@@ -60,7 +60,7 @@ class NodeConnection(threading.Thread):
         while not self.terminate_flag.is_set():
             if time.time() - self.last_ping > self.main_node.dead_time:
                 self.terminate_flag.set()
-                Logger.get_instance().warning(f"node{self.id} is dead")
+                Logger.get_logger().warning(f"node{self.id} is dead")
 
             line = ""
 
@@ -73,10 +73,10 @@ class NodeConnection(threading.Thread):
 
             except Exception as e:
                 self.terminate_flag.set()
-                Logger.get_instance().error(
+                Logger.get_logger().error(
                     f"NodeConnection: Socket has been terminated ({line})"
                 )
-                Logger.get_instance().error(e)
+                Logger.get_logger().error(e)
 
             if line != "":
                 try:

@@ -206,7 +206,7 @@ def get_my_ip(router_ip=None):
         ret = s.getsockname()[0]
         s.close()
     except Exception as exc:
-        Logger.get_instance().error(exc)
+        Logger.get_logger().error(exc)
     return ret
 
 
@@ -214,7 +214,7 @@ def forwardPort(
         e_port, i_port, router, lan_ip, disable, protocol, time, description, verbose
 ):
     if verbose:
-        Logger.get_instance().info("Discovering routers...")
+        Logger.get_logger().info("Discovering routers...")
 
     res = discover()
 
@@ -250,11 +250,11 @@ def forwardPort(
         if status == 200:
 
             if verbose:
-                Logger.get_instance().info(
+                Logger.get_logger().info(
                     f"{dis}port forward on {router_ip} successful, {e_port}->{local_ip}:{i_port}"
                 )
         else:
-            Logger.get_instance().error(
+            Logger.get_logger().error(
                 "%sport forward on %s failed, status=%s message=%s\n"
                 % (dis, router_ip, status, message)
             )

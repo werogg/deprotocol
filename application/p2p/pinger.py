@@ -13,13 +13,15 @@ class Pinger(threading.Thread):
 
     def stop(self):
         self.terminate_flag.set()
+        Logger.get_logger().trace('pinger_stop: terminate_flag set')
 
     def run(self):
-        Logger.get_instance().info("Pinger Started")
+        Logger.get_logger().info("Pinger Started")
         while (
                 not self.terminate_flag.is_set()
         ):  # Check whether the thread needs to be closed
             for i in self.parent.node_connections:
                 i.send("ping")
+                Logger.get_logger().trace('pinger_run: Ping packet sent, sleeping 20 seconds...')
                 time.sleep(20)
-        Logger.get_instance().info("Pinger stopped")
+        Logger.get_logger().info("Pinger stopped")

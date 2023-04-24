@@ -1,3 +1,4 @@
+from application.logger.logger import Logger
 from application.protocol import PacketEncoder, PacketDecoder
 from application.protocol.packet_factory import PacketFactory
 from application.protocol.type import PacketType
@@ -16,6 +17,7 @@ class PacketHandler:
         packet.sequence_number = self.sequence_number
         encoded_packet = self.packet_encoder.encode_packet(packet)
         self.sock.sendall(encoded_packet)
+        Logger.get_logger().trace(f'send_packet: Sent packet [{packet}]')
         self.sequence_number += 1
 
     def receive_packet(self):
@@ -24,6 +26,7 @@ class PacketHandler:
             raise ConnectionError('Connection closed by peer')
         self.receive_buffer.extend(data)
         if packet := self.packet_decoder.decode_packet(self.receive_buffer):
+            Logger.get_logger().trace(f'receive_packet: Received packet [{packet}]')
             self.receive_buffer = self.receive_buffer[packet.size:]
             return packet
         return None

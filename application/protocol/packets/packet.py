@@ -27,3 +27,7 @@ class Packet:
         if protocol_version != cls.PROTOCOL_VERSION:
             raise ValueError('Invalid protocol version')
         return cls(packet_type, sequence_number, payload[:payload_length])
+
+    def __str__(self):
+        return f"Packet(type='{self.type}', sequence_number='{self.sequence_number}', size='{self.size}'," \
+               f" payload='{self.payload}')"

@@ -13,7 +13,7 @@ class ConsoleSetup(SetupABC):
 
     def setup(self):
         if USE_CONSOLE:
-            Logger.get_instance().warning("Running DeProtocol in CONSOLE MODE!")
+            Logger.get_logger().warning("Running DeProtocol in CONSOLE MODE!")
             self.shell = DeConsole(self.node, self.tor_service)
             self.shell.start()
-            Logger.get_instance().info("Console started correctly!")
+            Logger.get_logger().info("Console started correctly!")
