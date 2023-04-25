@@ -46,6 +46,7 @@ jobs:
           path: deprotocol.whl
       - name: Install built package
         run: |
+          ls
           python -m pip install deprotocol.whl
           pip install build
       - name: Execute tests based on build
