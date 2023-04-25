@@ -47,7 +47,7 @@ jobs:
       - name: Install built package
         run: |
           ls
-          python -m pip install dist/*.whl
+          python -m pip install "dist/*.whl"
           pip install build
       - name: Execute tests based on build
         run: |
