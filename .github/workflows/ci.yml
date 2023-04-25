@@ -71,7 +71,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: coverage
-          path: coverage.html
+          path: htmlcov/index.html
       - name: Upload coverage report
         uses: codacy/codacy-coverage-reporter-action@v1.3.0
         with:
