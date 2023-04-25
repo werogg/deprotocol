@@ -39,13 +39,14 @@ jobs:
     needs: build-wheel
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/download-artifact@v3
+      - name: Download wheel artifact
+        uses: actions/download-artifact@v3
         with:
           name: deprotocol
-          path: /dist/deprotocol.whl
+          path: deprotocol.whl
       - name: Install built package
         run: |
-          python -m pip install /dist/deprotocol.whl
+          python -m pip install deprotocol.whl
           pip install build
       - name: Execute tests based on build
         run: |
@@ -96,7 +97,8 @@ jobs:
     needs: generate-coverage-report
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/download-artifact@v3
+      - name: Download coverage artifact
+        uses: actions/download-artifact@v3
         with:
           name: coverage
           path: /coverage/coverage.xml
@@ -108,4 +110,4 @@ jobs:
         uses: codacy/codacy-coverage-reporter-action@v1.3.0
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-          coverage-reports: /coverage/coverage.xml
+          coverage-reports: coverage.xml
