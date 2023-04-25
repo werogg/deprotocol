@@ -17,7 +17,7 @@ jobs:
   build-wheel:
     runs-on: ubuntu-latest
     name: Build Wheel
-    needs: setup-dependencies
+    needs: setup-python
     steps:
       - name: Install dependencies
         run: |
@@ -30,7 +30,7 @@ jobs:
   wheel-test:
     runs-on: ubuntu-latest
     name: Test built package
-    needs: build-wheel
+    needs: [setup-python, build-wheel]
     steps:
       - name: Install built package
         run: |
@@ -43,7 +43,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     name: Run tests
-    needs: setup-dependencies
+    needs: setup-python
     steps:
       - name: Install dependencies
         run: |
