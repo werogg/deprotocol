@@ -48,6 +48,7 @@ jobs:
           python -m build . --wheel
       - name: Install built package
         run: |
+          python --version
           pip install --no-cache-dir --no-index -f ./dist/ `ls dist/*.whl`
       - name: Execute tests based on build
         run: |
