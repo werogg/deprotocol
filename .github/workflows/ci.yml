@@ -5,25 +5,23 @@ on: [push]
 runs-on: ubuntu-latest
 
 jobs:
-  setup-dependencies:
-    name: Setup dependencies
+  setup-python:
+    name: Setup python
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python 3.10
         uses: actions/setup-python@v3
         with:
           python-version: "3.10"
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install build
-          pip install coverage
-          pip install -r requirements.txt
 
   build-wheel:
     name: Build Wheel
     needs: setup-dependencies
     steps:
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install build
       - name: Build wheel
         run: |
           python -m build . --wheel
@@ -44,6 +42,11 @@ jobs:
     name: Run tests
     needs: setup-dependencies
     steps:
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install coverage
+          pip install -r requirements.txt
       - name: Run tests
         run: |
           coverage run --source=src -m pytest
@@ -52,6 +55,10 @@ jobs:
     name: Coverage reporter
     needs: test
     steps:
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install coverage
       - name: Generate coverage report
         run: |
           coverage xml
@@ -60,6 +67,10 @@ jobs:
     name: Coverage reporter
     needs: generate-coverage-report
     steps:
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install coverage
       - name: Upload coverage report
         uses: codacy/codacy-coverage-reporter-action@v1
         with:
