@@ -43,7 +43,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: deprotocol
-          path: .
       - name: Install built package
         run: |
           ls
@@ -102,7 +101,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: coverage
-          path: .
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
