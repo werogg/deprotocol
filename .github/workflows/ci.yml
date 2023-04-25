@@ -3,9 +3,9 @@ name: Build Dechat
 on: [push]
 
 jobs:
-  prepare-dependencies:
+  setup-dependencies:
     runs-on: ubuntu-latest
-    name: Build Wheel
+    name: Setup dependencies
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python 3.10
