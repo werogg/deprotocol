@@ -45,7 +45,7 @@ jobs:
           path: deprotocol.whl
       - name: Install built package
         run: |
-          python -m pip install deprotocol.whl
+          python -m pip install ./deprotocol.whl
           pip install build
       - name: Execute tests based on build
         run: |
@@ -70,7 +70,7 @@ jobs:
 
   generate-coverage-report:
     runs-on: ubuntu-latest
-    name: Coverage reporter
+    name: Generate coverage report
     needs: test
     steps:
       - uses: actions/checkout@v3
@@ -79,6 +79,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install coverage
           pip install pytest
+          pip install -r requirements.txt
       - name: Generate coverage report
         run: |
           coverage run --source=src -m pytest
@@ -91,7 +92,7 @@ jobs:
 
   upload-coverage-report:
     runs-on: ubuntu-latest
-    name: Coverage reporter
+    name: Upload coverage report
     needs: generate-coverage-report
     steps:
       - uses: actions/checkout@v3
