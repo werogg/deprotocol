@@ -22,6 +22,7 @@ jobs:
   build-wheel:
     runs-on: ubuntu-latest
     name: Build Wheel
+    needs: setup-dependencies
     steps:
     - name: Build wheel
       run: |
@@ -30,6 +31,7 @@ jobs:
   wheel-test:
     runs-on: ubuntu-latest
     name: Test built package
+    needs: build-wheel
     steps:
       - name: Install built package
         run: |
@@ -42,6 +44,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     name: Run tests
+    needs: setup-dependencies
     steps:
       - name: Run tests
         run: |
@@ -50,6 +53,7 @@ jobs:
   generate-coverage-report:
     runs-on: ubuntu-latest
     name: Coverage reporter
+    needs: test
     steps:
       - name: Generate coverage report
         run: |
@@ -58,6 +62,7 @@ jobs:
   upload-coverage-report:
     runs-on: ubuntu-latest
     name: Coverage reporter
+    needs: generate-coverage-report
     steps:
       - name: Upload coverage report
         uses: codacy/codacy-coverage-reporter-action@v1
