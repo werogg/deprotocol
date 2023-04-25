@@ -42,10 +42,10 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: deprotocol
-          path: dist/deprotocol.whl
+          path: /dist/deprotocol.whl
       - name: Install built package
         run: |
-          python -m pip install dist/deprotocol.whl
+          python -m pip install /dist/deprotocol.whl
           pip install build
       - name: Execute tests based on build
         run: |
@@ -99,7 +99,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: coverage
-          path: coverage/coverage.xml
+          path: /coverage/coverage.xml
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -108,4 +108,4 @@ jobs:
         uses: codacy/codacy-coverage-reporter-action@v1.3.0
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-          coverage-reports: coverage/coverage.xml
+          coverage-reports: /coverage/coverage.xml
