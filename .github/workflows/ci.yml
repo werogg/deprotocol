@@ -40,22 +40,27 @@ jobs:
           pytest
 
   test:
-    - runs-on: ubuntu-latest
-    - name: Run tests
-      run: |
-        coverage run --source=src -m pytest
+    runs-on: ubuntu-latest
+    name: Run tests
+    steps:
+      - name: Run tests
+        run: |
+          coverage run --source=src -m pytest
 
   generate-coverage-report:
-    - runs-on: ubuntu-latest
-    - name: Coverage reporter
-      uses: codacy/codacy-coverage-reporter-action@v1
-      run: |
-        coverage xml
+    runs-on: ubuntu-latest
+    name: Coverage reporter
+    steps:
+      - name: Generate coverage report
+        run: |
+          coverage xml
 
   upload-coverage-report:
-    - runs-on: ubuntu-latest
-    - name: Coverage reporter
-      uses: codacy/codacy-coverage-reporter-action@v1
-      with:
-        project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-        coverage-reports: coverage.xml
+    runs-on: ubuntu-latest
+    name: Coverage reporter
+    steps:
+      - name: Upload coverage report
+        uses: codacy/codacy-coverage-reporter-action@v1
+        with:
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          coverage-reports: coverage.xml
