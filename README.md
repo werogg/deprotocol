@@ -24,6 +24,7 @@
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
+[![Discord][discord-shield]][discord-url]
 
 
 
@@ -42,7 +43,7 @@
   <p align="center">
     A Decentralized and Highly Encrypted P2P Chat over Tor
     <br />
-    <a href="https://github.com/werogg/deprotocol"><strong><del>Explore the docs »</del></strong></a>
+    <a href="https://discord.gg/ZsWt5RdS5E"><strong>Join the Discord »</strong></a>
     <br />
     <br />
     <a href="https://github.com/werogg/deprotocol"><del>View Demo</del></a>
@@ -230,6 +231,8 @@ See the [open issues](https://github.com/werogg/deprotocol/issues) for a full li
 
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
+Please join our [Discord Server](https://discord.gg/ZsWt5RdS5E) if you would like to contribute, it will be great for me to have a community support to chat about it.
+
 If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
 Don't forget to give the project a star! Thanks again!
 
@@ -290,6 +293,8 @@ Resources and credits!
 [license-url]: https://github.com/werogg/deprotocol/blob/development/LICENSE
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/in/joel-otero/
+[discord-shield]: https://img.shields.io/badge/Discord-7289DA?style=for-the-badge&logo=discord&logoColor=white
+[discord-url]: https://discord.gg/ZsWt5RdS5E
 
 [product-screenshot]: images/screenshot.png
 [Python]: https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white
