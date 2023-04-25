@@ -28,9 +28,9 @@ jobs:
         run: |
           python -m build . --wheel
       - name: Upload wheel artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
-          name: wheel
+          name: deprotocol
           path: dist/*.whl
 
   wheel-test:
@@ -39,13 +39,13 @@ jobs:
     needs: build-wheel
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: wheel
           path: deprotocol.whl
       - name: Install built package
         run: |
-          python -m pip install ./deprotocol.whl
+          python -m pip install deprotocol.whl
           pip install build
       - name: Execute tests based on build
         run: |
@@ -83,12 +83,12 @@ jobs:
       - name: Generate coverage report
         run: |
           coverage run --source=src -m pytest
-          coverage xml
+          coverage xml -o cobertura.xml
       - name: Upload coverage artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
-          name: coverage
-          path: coverage.xml
+          name: cobertura
+          path: cobertura.xml
 
   upload-coverage-report:
     runs-on: ubuntu-latest
@@ -96,10 +96,10 @@ jobs:
     needs: generate-coverage-report
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
-          name: coverage
-          path: coverage.xml
+          name: cobertura
+          path: cobertura.xml
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -108,4 +108,4 @@ jobs:
         uses: codacy/codacy-coverage-reporter-action@v1
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-          coverage-reports: ./coverage.xml
+          coverage-reports: cobertura.xml
