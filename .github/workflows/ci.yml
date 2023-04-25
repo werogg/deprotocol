@@ -43,11 +43,11 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: deprotocol
-          path: deprotocol.whl
+          path: .
       - name: Install built package
         run: |
           ls
-          python -m pip install deprotocol.whl
+          python -m pip install dist/*.whl
           pip install build
       - name: Execute tests based on build
         run: |
@@ -102,7 +102,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: coverage
-          path: coverage.xml
+          path: .
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
