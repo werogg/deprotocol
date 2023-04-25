@@ -19,6 +19,7 @@ jobs:
     name: Build Wheel
     needs: setup-python
     steps:
+      - uses: actions/checkout@v3
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -30,8 +31,9 @@ jobs:
   wheel-test:
     runs-on: ubuntu-latest
     name: Test built package
-    needs: [setup-python, build-wheel]
+    needs: build-wheel
     steps:
+      - uses: actions/checkout@v3
       - name: Install built package
         run: |
           python -m pip install dist/*.whl
@@ -45,6 +47,7 @@ jobs:
     name: Run tests
     needs: setup-python
     steps:
+      - uses: actions/checkout@v3
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -59,6 +62,7 @@ jobs:
     name: Coverage reporter
     needs: test
     steps:
+      - uses: actions/checkout@v3
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -72,6 +76,7 @@ jobs:
     name: Coverage reporter
     needs: generate-coverage-report
     steps:
+      - uses: actions/checkout@v3
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
