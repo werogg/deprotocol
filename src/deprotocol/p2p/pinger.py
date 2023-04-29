@@ -2,13 +2,15 @@ import threading
 import time
 
 from deprotocol.logger.logger import Logger
+from deprotocol.protocol.packets.keepalive import KeepAlivePacket
 
 
 class Pinger(threading.Thread):
-    def __init__(self, parent):
+    def __init__(self, node_connection):
+        super(Pinger, self).__init__()
         self.terminate_flag = threading.Event()
-        super(Pinger, self).__init__()  # CAll Thread.__init__()
-        self.parent = parent
+        self.last_ping = time.time()
+        self.node_connection = node_connection
         self.dead_time = 30  # time to disconect from node if not pinged
 
     def stop(self):
@@ -17,11 +19,11 @@ class Pinger(threading.Thread):
 
     def run(self):
         Logger.get_logger().info("Pinger Started")
-        while (
-                not self.terminate_flag.is_set()
-        ):  # Check whether the thread needs to be closed
-            for i in self.parent.node_connections:
-                i.send("ping")
-                Logger.get_logger().trace('pinger_run: Ping packet sent, sleeping 20 seconds...')
-                time.sleep(20)
+
+        while not self.terminate_flag.is_set():
+            ping_packet = KeepAlivePacket()
+            self.node_connection.packet_handler.send_packet(ping_packet)
+            Logger.get_logger().trace('pinger_run: Ping packet sent, sleeping 20 seconds...')
+            time.sleep(20)
+
         Logger.get_logger().info("Pinger stopped")

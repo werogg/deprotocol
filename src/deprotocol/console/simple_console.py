@@ -42,7 +42,7 @@ class DeConsole(threading.Thread):
             )
         if "connect " in cmd:
             args = cmd.replace("connect ", "")
-            self.node.connect(args, port=65432)
+            self.node.connect_to(args, port=65432)
 
         if "msg " in cmd:
             args = cmd.replace("msg ", "")
