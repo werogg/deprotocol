@@ -8,7 +8,7 @@ from Crypto.Hash import SHA256
 from Crypto.PublicKey import RSA
 from Crypto.Signature import PKCS1_v1_5
 
-from deprotocol.logger.logger import Logger  # pylint: disable=import-error
+from deprotocol.app.logger import Logger  # pylint: disable=import-error
 
 
 def generate_keys():

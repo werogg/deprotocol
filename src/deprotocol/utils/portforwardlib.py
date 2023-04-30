@@ -14,7 +14,7 @@ from xml.dom.minidom import Document
 import http.client
 import time
 
-from deprotocol.logger.logger import Logger
+from deprotocol.app.logger import Logger
 
 
 def discover():

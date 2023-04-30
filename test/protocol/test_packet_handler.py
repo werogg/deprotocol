@@ -1,11 +1,11 @@
 import pytest
 from unittest.mock import MagicMock
 
-from deprotocol.protocol.packet_factory import PacketFactory
+from deprotocol.network.protocol.packet_factory import PacketFactory
 
-from deprotocol.protocol.packet_encoder import PacketEncoder
-from deprotocol.protocol.packet_handler import PacketHandler
-from deprotocol.protocol.type import PacketType
+from deprotocol.network.protocol import PacketEncoder
+from deprotocol.network.protocol.packet_handler import PacketHandler
+from deprotocol.network.protocol import PacketType
 
 
 class TestPacketHandler:

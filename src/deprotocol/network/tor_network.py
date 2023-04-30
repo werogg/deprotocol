@@ -6,8 +6,14 @@ import socket
 import stem.control
 import stem.process
 
-from deprotocol.logger.logger import Logger
+from deprotocol.app.logger import Logger
+from deprotocol.settings import DATA_DIR
+from deprotocol.settings import HIDDEN_SERVICE_DIR
+from deprotocol.settings import HIDDEN_SERVICE_HOST
+from deprotocol.settings import HIDDEN_SERVICE_FORWARD_PORT
+from deprotocol.settings import HIDDEN_SERVICE_VIRTUAL_PORT
 from deprotocol.settings import TOR_BINARIES_PATH
+from deprotocol.settings import TOR_DATA_DIR
 
 
 class TorService:
@@ -24,9 +30,9 @@ class TorService:
                     'SocksPort': '9050',
                     'SocksPolicy': 'accept *',
                     'ControlPort': str(self.port),
-                    'DataDirectory': os.path.join(os.getcwd(), 'tor_data'),
-                    'HiddenServiceDir': os.path.join(os.getcwd(), 'tor_hidden_service'),
-                    'HiddenServicePort': '80 127.0.0.1:65432'
+                    'DataDirectory': TOR_DATA_DIR,
+                    'HiddenServiceDir': HIDDEN_SERVICE_DIR,
+                    'HiddenServicePort': f'{HIDDEN_SERVICE_VIRTUAL_PORT} {HIDDEN_SERVICE_HOST}:{HIDDEN_SERVICE_FORWARD_PORT}'
                 },
                 tor_cmd=os.path.join(os.getcwd(), TOR_BINARIES_PATH),
                 init_msg_handler=self._print_bootstrap_lines,

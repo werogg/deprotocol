@@ -1,6 +1,6 @@
 from deprotocol.app.setup.setup import SetupABC
-from deprotocol.logger.logger import Logger
-from deprotocol.p2p.node import Node
+from deprotocol.app.logger import Logger
+from deprotocol.network.peer_networking.node import Node
 
 
 class P2PNodeSetup(SetupABC):

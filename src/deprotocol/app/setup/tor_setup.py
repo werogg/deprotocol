@@ -1,7 +1,7 @@
 import socks
 
 from deprotocol.app.setup.setup import SetupABC
-from deprotocol.logger.logger import Logger
+from deprotocol.app.logger import Logger
 from deprotocol.network.tor_network import TorService
 from deprotocol.settings import PROXY_TYPE
 from deprotocol.utils.tor_utils import TorUtils
