@@ -5,6 +5,7 @@ import threading
 import socks
 import stem
 
+from deprotocol.event.events.deprotocol_ready_event import DeProtocolReadyEvent
 from deprotocol.logger.logger import Logger
 from deprotocol.p2p.node_connection import NodeConnection
 from deprotocol.p2p.proxied_socket import Socket
@@ -16,6 +17,9 @@ class ConnectionHandler(threading.Thread):
         self.deprotocol = deprotocol
         self.network_manager = network_manager
         self.terminate_flag = threading.Event()
+
+        event = DeProtocolReadyEvent()
+        self.deprotocol.listeners.fire(event)
 
     def connect_to(self, address, port):
         sock = socks.socksocket()

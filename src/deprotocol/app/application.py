@@ -22,8 +22,11 @@ class DeProtocol(ABC):
     def __init__(self):
         self.setups = {}
         self.listeners = Listeners()
+        self.node = None
 
     def on_start(self, proxy_host='127.0.0.1', proxy_port=9050):
+        self.register_default_events()
+
         self.setups = {
             'logger': LoggerSetup(),
             'tor': TorSetup(self, proxy_host, proxy_port),
@@ -35,15 +38,13 @@ class DeProtocol(ABC):
 
         ConsoleSetup(self.setups['p2p'].node, self.setups['tor'].tor_service).setup()
 
-        self.register_default_events()
-
         Logger.get_logger().info(f"Starting {APP_NAME} version {APP_VERSION}, running on {platform.system()}")
 
     def on_stop(self):
         pass
 
     def register_default_events(self):
-        self.register_events(PacketReceivedListener())
+        self.register_listener(PacketReceivedListener())
 
-    def register_events(self, listener):
+    def register_listener(self, listener):
         self.listeners.register_listener(listener)
