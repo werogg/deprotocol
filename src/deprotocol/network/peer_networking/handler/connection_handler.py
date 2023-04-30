@@ -41,9 +41,7 @@ class ConnectionHandler(threading.Thread):
             f"NodeConnection.send: Started with client ({address}) ':{str(port)}'"
         )
 
-        new_connection = self.create_new_connection(self.deprotocol, sock)
-        self.network_manager.node_connections.append(new_connection)
-        new_connection.start()
+        return self.create_new_connection(self.deprotocol, sock).start()
 
     def run(self):
         with Socket(self.network_manager.host, self.network_manager.port) as sock:
