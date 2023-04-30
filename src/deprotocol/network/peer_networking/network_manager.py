@@ -22,6 +22,7 @@ class NetworkManager(threading.Thread):
         super().start()
 
     def stop(self):
+        self.connection_handler.stop()
         self.terminate_flag.set()
 
     def connect_to(self, address, port=NODE_PORT):

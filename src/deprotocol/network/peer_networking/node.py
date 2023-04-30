@@ -18,6 +18,9 @@ class Node:
     def start(self):
         self.network_manager.start()
 
+    def stop(self):
+        self.network_manager.stop()
+
     def connect_to(self, host, port=NODE_PORT):
         self.network_manager.connect_to(host, port)
 

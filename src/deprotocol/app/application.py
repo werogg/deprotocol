@@ -1,9 +1,13 @@
 import platform
+import signal
+import sys
 from abc import ABC
+from time import sleep
 
 from deprotocol.app.console.command.command_connect import CommandConnect
 from deprotocol.app.console.command.command_handler import CommandHandler
 from deprotocol.app.console.command.command_help import CommandHelp
+from deprotocol.app.console.command.command_quit import CommandQuit
 from deprotocol.app.listeners.packet_received_listener import PacketReceivedListener
 from deprotocol.app.user import User
 from deprotocol.event.event_listener import Listeners
@@ -29,7 +33,16 @@ class DeProtocol(ABC):
         self.node = None
         self.user = User()
 
+    def on_stop(self):
+        self.node.stop()
+        self.setups['tor'].stop()
+        Logger.get_logger().info("Successfully stopped! Bye...")
+        sleep(5)
+        sys.exit(0)
+
     def on_start(self, proxy_host='127.0.0.1', proxy_port=9050):
+        signal.signal(signal.SIGINT, self.on_stop)
+        signal.signal(signal.SIGTERM, self.on_stop)
         self.register_default_events()
         self.register_default_commands()
 
@@ -47,9 +60,6 @@ class DeProtocol(ABC):
 
         Logger.get_logger().info(f"Starting {APP_NAME} version {APP_VERSION}, running on {platform.system()}")
 
-    def on_stop(self):
-        pass
-
     def set_nickname(self, nickname):
         self.user.nickname = nickname
 
@@ -62,6 +72,7 @@ class DeProtocol(ABC):
     def register_default_commands(self):
         self.register_command('help', CommandHelp)
         self.register_command('connect', CommandConnect(self))
+        self.register_command('quit', CommandQuit(self))
 
     def register_listener(self, listener):
         self.listeners.register_listener(listener)

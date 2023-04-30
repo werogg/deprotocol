@@ -79,6 +79,7 @@ class ConsoleUI(threading.Thread):
             else:
                 # Add character to command
                 command += chr(c)
+        self.deprotocol.on_stop()
 
     def run(self):
         curses.wrapper(self.shell)

@@ -29,3 +29,6 @@ class TorSetup(SetupABC):
         self.tor_service = TorService(9051)
         self.tor_service.start()
         Logger.get_logger().info("Tor Service started correctly!")
+
+    def stop(self):
+        self.tor_service.stop()

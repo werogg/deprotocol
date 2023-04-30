@@ -60,6 +60,15 @@ class ConnectionHandler(threading.Thread):
                         Logger.get_logger().error(f"SocketClosed: {str(exc)}")
                 except Exception as exc:
                     Logger.get_logger().error(exc)
+            self.stop()
 
     def create_new_connection(self, deprotocol, conn):
         return NodeConnection(deprotocol, conn, len(self.network_manager.node_connections))
+
+    def stop(self):
+        self.close_all_connections()
+        self.terminate_flag.set()
+
+    def close_all_connections(self):
+        for conn in self.network_manager.node_connections:
+            conn.stop()

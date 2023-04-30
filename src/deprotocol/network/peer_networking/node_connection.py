@@ -72,3 +72,4 @@ class NodeConnection(threading.Thread):
                     self.terminate_flag.set()
                     Logger.get_logger().error("NodeConnection: Socket has been terminated")
                     Logger.get_logger().error(e)
+        self.sock.close()
