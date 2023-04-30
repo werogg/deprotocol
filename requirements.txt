@@ -7,4 +7,3 @@ PySocks==1.7.1
 stem==1.8.1
 tqdm==4.65.0
 upnpclient==1.0.3
-curses==2.3.1
