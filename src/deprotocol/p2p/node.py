@@ -4,13 +4,14 @@ from deprotocol.p2p.network_manager import NetworkManager
 
 
 class Node:
-    def __init__(self, host='', port=65432, onion_address=''):
+    def __init__(self, deprotocol, host='', port=65432, onion_address=''):
         super().__init__()
+        self.deprotocol = deprotocol
         self.terminate_flag = threading.Event()
         self.host = host
         self.port = port
         self.onion_address = onion_address
-        self.network_manager = NetworkManager(host, port, onion_address)
+        self.network_manager = NetworkManager(deprotocol, host, port, onion_address)
 
     def start(self):
         self.network_manager.start()

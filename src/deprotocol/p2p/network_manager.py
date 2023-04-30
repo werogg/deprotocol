@@ -6,18 +6,20 @@ from deprotocol.settings import NODE_PORT
 
 
 class NetworkManager(threading.Thread):
-    def __init__(self, host='', port=65432, onion_address=''):
+    def __init__(self, deprotocol, host='', port=65432, onion_address=''):
         super().__init__()
+        self.deprotocol = deprotocol
         self.terminate_flag = threading.Event()
         self.host = host
         self.port = port
         self.onion_address = onion_address
         self.node_connections = []
         self.banned_address = []
-        self.connection_handler = ConnectionHandler(self)
+        self.connection_handler = ConnectionHandler(deprotocol, self)
 
     def start(self):
-        pass
+        self.connection_handler.start()
+        super().start()
 
     def stop(self):
         self.terminate_flag.set()

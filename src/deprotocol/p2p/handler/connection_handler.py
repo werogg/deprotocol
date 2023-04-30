@@ -11,8 +11,9 @@ from deprotocol.p2p.proxied_socket import Socket
 
 
 class ConnectionHandler(threading.Thread):
-    def __init__(self, network_manager):
+    def __init__(self, deprotocol, network_manager):
         super().__init__()
+        self.deprotocol = deprotocol
         self.network_manager = network_manager
         self.terminate_flag = threading.Event()
 
@@ -36,15 +37,19 @@ class ConnectionHandler(threading.Thread):
             f"NodeConnection.send: Started with client ({address}) ':{str(port)}'"
         )
 
-        self.create_new_connection(sock)
+        new_connection = self.create_new_connection(self.deprotocol, sock)
+        self.network_manager.node_connections.append(new_connection)
+        new_connection.start()
 
     def run(self):
         with Socket(self.network_manager.host, self.network_manager.port) as sock:
             while not self.terminate_flag.is_set():
                 try:
                     conn, host = sock.accept()
-                    new_connection = self.create_new_connection(conn)
+                    new_connection = self.create_new_connection(self.deprotocol, conn)
                     self.network_manager.node_connections.append(new_connection)
+                    Logger.get_logger().info("Connection created with a client.")
+                    new_connection.start()
                 except socket.timeout:
                     continue
                 except socket.error as exc:
@@ -52,5 +57,6 @@ class ConnectionHandler(threading.Thread):
                         Logger.get_logger().error(f"SocketClosed: {str(exc)}")
                 except Exception as exc:
                     Logger.get_logger().error(exc)
-    def create_new_connection(self, conn):
-        return NodeConnection(conn)
+
+    def create_new_connection(self, deprotocol, conn):
+        return NodeConnection(deprotocol, conn)

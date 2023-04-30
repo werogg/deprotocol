@@ -1,11 +1,10 @@
 import socket
-import sys
 import threading
 import time
 
 import socks
-import stem
 
+from deprotocol.event.events.packet_received_event import PacketReceivedEvent
 from deprotocol.logger.logger import Logger
 from deprotocol.p2p.pinger import Pinger
 from deprotocol.protocol.packet_handler import PacketHandler
@@ -13,8 +12,9 @@ from deprotocol.protocol.type import PacketType
 
 
 class NodeConnection(threading.Thread):
-    def __init__(self, sock):
-        super(NodeConnection, self).__init__()
+    def __init__(self, deprotocol, sock):
+        super().__init__()
+        self.deprotocol = deprotocol
         socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, '127.0.0.1', 9050)
         self.sock = sock
         self.pinger = None
@@ -24,6 +24,7 @@ class NodeConnection(threading.Thread):
     def start(self):
         self.pinger = Pinger(self)
         self.pinger.start()
+        super().start()
 
     def send_packet(self, packet):
         self.packet_handler.send_packet(packet)
@@ -38,18 +39,16 @@ class NodeConnection(threading.Thread):
             if time.time() - self.pinger.last_ping > self.pinger.dead_time:
                 self.terminate_flag.set()
                 Logger.get_logger().warning("Node died")
-
-            try:
-                received_packet = self.packet_handler.receive_packet()
-                if received_packet.TYPE == PacketType.KEEP_ALIVE:
-                    self.pinger.last_ping = time.time()
-            except socket.timeout:
-                Logger.get_logger().error("NodeConnection: timeout")
-            except Exception as e:
-                self.terminate_flag.set()
-                Logger.get_logger().error("NodeConnection: Socket has been terminated")
-                Logger.get_logger().error(e)
-
-
-
-
+            else:
+                try:
+                    received_packet = self.packet_handler.receive_packet()
+                    event = PacketReceivedEvent(received_packet)
+                    self.deprotocol.listeners.fire(event)
+                    if received_packet.TYPE == PacketType.KEEP_ALIVE:
+                        self.pinger.last_ping = time.time()
+                except socket.timeout:
+                    Logger.get_logger().error("NodeConnection: timeout")
+                except Exception as e:
+                    self.terminate_flag.set()
+                    Logger.get_logger().error("NodeConnection: Socket has been terminated")
+                    Logger.get_logger().error(e)

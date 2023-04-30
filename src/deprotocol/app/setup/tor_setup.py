@@ -8,7 +8,8 @@ from deprotocol.utils.tor_utils import TorUtils
 
 
 class TorSetup(SetupABC):
-    def __init__(self, proxy_host='127.0.0.1', proxy_port=9050):
+    def __init__(self, deprotocol, proxy_host='127.0.0.1', proxy_port=9050):
+        self.deprotocol = deprotocol
         self.tor_service = None
         self.tor_client = None
         self.proxy_host = proxy_host
