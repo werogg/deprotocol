@@ -1,17 +1,15 @@
 from unittest.mock import MagicMock
 
 from deprotocol.network.protocol.packets.end import EndConnectionPacket
-
-from deprotocol.network.protocol import KeepAlivePacket
-
-from deprotocol.network.protocol import FileTransferPacket
+from deprotocol.network.protocol.packets.file import FileTransferPacket
+from deprotocol.network.protocol.packets.keepalive import KeepAlivePacket
 
 from deprotocol.network.protocol.packets.message import MessagePacket
 
 from deprotocol.network.protocol import HandshakePacket
-from deprotocol.network.protocol import PacketType
 
 from deprotocol.network.protocol.packet_factory import PacketFactory
+from deprotocol.network.protocol.type import PacketType
 
 
 class TestPacketFactory:

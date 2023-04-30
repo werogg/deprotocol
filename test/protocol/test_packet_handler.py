@@ -5,7 +5,7 @@ from deprotocol.network.protocol.packet_factory import PacketFactory
 
 from deprotocol.network.protocol import PacketEncoder
 from deprotocol.network.protocol.packet_handler import PacketHandler
-from deprotocol.network.protocol import PacketType
+from deprotocol.network.protocol.type import PacketType
 
 
 class TestPacketHandler:
