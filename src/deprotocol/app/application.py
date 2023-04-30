@@ -1,9 +1,11 @@
 import platform
 from abc import ABC
 
+from deprotocol.app.console.command.command_connect import CommandConnect
 from deprotocol.app.console.command.command_handler import CommandHandler
 from deprotocol.app.console.command.command_help import CommandHelp
 from deprotocol.app.listeners.packet_received_listener import PacketReceivedListener
+from deprotocol.app.user import User
 from deprotocol.event.event_listener import Listeners
 from deprotocol.version import APP_VERSION
 
@@ -25,6 +27,7 @@ class DeProtocol(ABC):
         self.listeners = Listeners()
         self.command_handler = CommandHandler(self)
         self.node = None
+        self.user = User()
 
     def on_start(self, proxy_host='127.0.0.1', proxy_port=9050):
         self.register_default_events()
@@ -40,16 +43,25 @@ class DeProtocol(ABC):
         for setup in self.setups.values():
             setup.setup()
 
+        self.node.onion_address = self.setups['tor'].tor_service.get_address()
+
         Logger.get_logger().info(f"Starting {APP_NAME} version {APP_VERSION}, running on {platform.system()}")
 
     def on_stop(self):
         pass
+
+    def set_nickname(self, nickname):
+        self.user.nickname = nickname
+
+    def set_profile_img(self, profile_img):
+        self.user.profile_img = profile_img
 
     def register_default_events(self):
         self.register_listener(PacketReceivedListener())
 
     def register_default_commands(self):
         self.register_command('help', CommandHelp)
+        self.register_command('connect', CommandConnect(self))
 
     def register_listener(self, listener):
         self.listeners.register_listener(listener)

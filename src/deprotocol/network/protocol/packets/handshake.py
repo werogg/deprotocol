@@ -6,8 +6,8 @@ from deprotocol.network.protocol.type import PacketType
 class HandshakePacket(Packet):
     TYPE = PacketType.HANDSHAKE
 
-    def __init__(self, public_key=None):
-        super().__init__(self.TYPE, 0, public_key)
+    def __init__(self, payload=None):
+        super().__init__(self.TYPE, 0, payload)
 
     @classmethod
     def from_packet(cls, packet):

@@ -48,6 +48,7 @@ class ConnectionHandler(threading.Thread):
             while not self.terminate_flag.is_set():
                 try:
                     conn, host = sock.accept()
+                    Logger.get_logger().info("Connection created with a client1.")
                     new_connection = self.create_new_connection(self.deprotocol, conn)
                     self.network_manager.node_connections.append(new_connection)
                     Logger.get_logger().info("Connection created with a client.")
@@ -61,4 +62,4 @@ class ConnectionHandler(threading.Thread):
                     Logger.get_logger().error(exc)
 
     def create_new_connection(self, deprotocol, conn):
-        return NodeConnection(deprotocol, conn)
+        return NodeConnection(deprotocol, conn, len(self.network_manager.node_connections))

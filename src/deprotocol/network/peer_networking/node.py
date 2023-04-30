@@ -1,6 +1,7 @@
 import threading
 
 from deprotocol.network.peer_networking.network_manager import NetworkManager
+from deprotocol.settings import NODE_PORT
 
 
 class Node:
@@ -17,11 +18,14 @@ class Node:
     def start(self):
         self.network_manager.start()
 
-    def connect_to(self, host, port):
+    def connect_to(self, host, port=NODE_PORT):
         self.network_manager.connect_to(host, port)
 
     def disconnect_from(self, node):
         self.network_manager.disconnect_from(node)
+
+    def get_connected_nodes(self):
+        return self.network_manager.node_connections
 
     def send_message(self, message, node):
         self.network_manager.send_message(message, node)

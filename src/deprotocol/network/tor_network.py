@@ -82,4 +82,4 @@ class TorService:
         print(response)
 
     def get_address(self):
-        return self.hidden_service.service_id
+        return f"{self.hidden_service.service_id}.onion"
