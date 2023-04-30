@@ -12,5 +12,6 @@ class Client:
 
     def connect(self, address, port=NODE_PORT):
         self.app.node.connect_to(address, port)
+
     def register_listener(self, listener):
         self.app.register_listener(listener)
