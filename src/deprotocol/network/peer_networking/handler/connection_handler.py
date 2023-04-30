@@ -71,4 +71,5 @@ class ConnectionHandler(threading.Thread):
 
     def close_all_connections(self):
         for conn in self.network_manager.node_connections:
-            conn.stop()
+            if conn:
+                conn.stop()

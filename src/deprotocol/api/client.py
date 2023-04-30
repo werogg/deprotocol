@@ -10,6 +10,9 @@ class Client:
     def start(self, proxy_host='127.0.0.1', proxy_port=9050):
         self.app.on_start(proxy_host, proxy_port)
 
+    def stop(self):
+        self.app.on_stop()
+
     def connect(self, address, port=NODE_PORT):
         self.app.node.connect_to(address, port)
 
@@ -18,3 +21,6 @@ class Client:
 
     def register_listener(self, listener):
         self.app.register_listener(listener)
+
+    def get_address(self):
+        return self.app.node.onion_address

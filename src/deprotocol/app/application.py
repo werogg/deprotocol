@@ -37,8 +37,8 @@ class DeProtocol(ABC):
         self.node.stop()
         self.setups['tor'].stop()
         Logger.get_logger().info("Successfully stopped! Bye...")
-        sleep(5)
-        sys.exit(0)
+        sleep(2)
+        #sys.exit(0)
 
     def on_start(self, proxy_host='127.0.0.1', proxy_port=9050):
         signal.signal(signal.SIGINT, self.on_stop)

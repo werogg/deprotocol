@@ -1,5 +1,6 @@
 import curses
 import logging
+import signal
 import threading
 
 from deprotocol.app.console.command.command_handler import CommandHandler
@@ -23,8 +24,25 @@ class ConsoleUI(threading.Thread):
     def __init__(self, deprotocol):
         super().__init__()
         self.deprotocol = deprotocol
+        self.terminate_flag = threading.Event()
 
     def shell(self, stdscr):
+        try:
+            self.loop(stdscr)
+        except KeyboardInterrupt:
+            Logger.get_logger().error("User requested stopping the protocol, stopping!")
+            self.stop()
+        except Exception as exc:
+            Logger.get_logger().error(f"An exception is stopping DeProtocol! ({exc})")
+            self.stop()
+        finally:
+            self.deprotocol.on_stop()
+
+    def stop(self):
+        self.terminate_flag.set()
+        self.deprotocol.on_stop()
+
+    def loop(self, stdscr):
         # Clear the screen and hide the cursor
         stdscr.clear()
 
@@ -49,7 +67,7 @@ class ConsoleUI(threading.Thread):
         prompt = '> '
         command = ''
 
-        while True:
+        while not self.terminate_flag.is_set():
             # Print the output window
             input_win.refresh()
             output_win.refresh()
@@ -74,12 +92,25 @@ class ConsoleUI(threading.Thread):
                 # Handle backspace
                 command = command[:-1]
                 input_win.delch()
-            elif c == 3:  # Ctrl-C
-                break
+            elif c in [3, 26]:  # Ctrl-C
+                self.stop()
             else:
                 # Add character to command
                 command += chr(c)
-        self.deprotocol.on_stop()
 
     def run(self):
-        curses.wrapper(self.shell)
+        while not self.terminate_flag.is_set():
+            try:
+                curses.wrapper(self.shell)
+            except KeyboardInterrupt:
+                Logger.get_logger().error("User requested stopping the protocol, stopping!")
+                self.terminate_flag.set()
+            except Exception as exc:
+                Logger.get_logger().error(f"An exception is stopping DeProtocol! ({exc})")
+                self.terminate_flag.set()
+        if self.terminate_flag.is_set():
+            Logger.get_logger().info("DeProtocol console closed by user, stopping!")
+            self.deprotocol.on_stop()
+        else:
+            Logger.get_logger().info("DeProtocol successfully closed, see you soon!")
+

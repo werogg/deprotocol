@@ -34,7 +34,6 @@ class NodeConnection(threading.Thread):
         self.user = User()
 
     def start(self):
-        super().start()
         self.pinger = Pinger(self)
         self.pinger.start()
         self.send_packet(
@@ -44,11 +43,13 @@ class NodeConnection(threading.Thread):
                                  nickname='default',
                                  profile_img='',
                                  public_key=cf.serialize_key(self.public_key)).serialize()))
+        super().start()
 
     def send_packet(self, packet):
         self.packet_handler.send_packet(packet)
 
     def stop(self):
+        self.pinger.stop()
         self.terminate_flag.set()
 
     def handle_received_packet(self, received_packet):
@@ -73,3 +74,4 @@ class NodeConnection(threading.Thread):
                     Logger.get_logger().error("NodeConnection: Socket has been terminated")
                     Logger.get_logger().error(e)
         self.sock.close()
+        self.pinger.stop()

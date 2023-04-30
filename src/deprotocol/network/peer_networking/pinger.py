@@ -22,7 +22,10 @@ class Pinger(threading.Thread):
 
         while not self.terminate_flag.is_set():
             ping_packet = KeepAlivePacket()
-            self.node_connection.packet_handler.send_packet(ping_packet)
+            try:
+                self.node_connection.packet_handler.send_packet(ping_packet)
+            except Exception as exc:
+                Logger.get_logger().error(exc)
             Logger.get_logger().trace('pinger_run: Ping packet sent, sleeping 20 seconds...')
             time.sleep(20)
 
