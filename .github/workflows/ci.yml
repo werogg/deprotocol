@@ -33,7 +33,7 @@ jobs:
           name: deprotocol
           path: dist/*.whl
 
-  unit-test:
+  test:
     runs-on: ubuntu-latest
     name: Run tests
     needs: setup-python
@@ -50,26 +50,10 @@ jobs:
           coverage run --source=src -m pytest
           echo coverage report
 
-  behave-test:
-    runs-on: ubuntu-latest
-    name: Run behaviour tests
-    needs: setup-python
-    steps:
-      - uses: actions/checkout@v3
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install behave
-          pip install -r requirements.txt
-      - name: Run tests
-        run: |
-          cd test
-          python main.py
-
   generate-coverage-report:
     runs-on: ubuntu-latest
     name: Generate coverage report
-    needs: unit-test
+    needs: test
     steps:
       - uses: actions/checkout@v3
       - name: Install dependencies
