@@ -34,7 +34,7 @@ class PacketHandler:
     def send_file(self, file_path):
         with open(file_path, 'rb') as f:
             for data in iter(lambda: f.read(4096), b''):
-                packet = PacketFactory.create_packet(payload=data)
+                packet = PacketFactory.create_packet(PacketType.FILE, payload=data)
                 self.send_packet(packet)
         self.send_packet(PacketFactory.create_packet(''))
 

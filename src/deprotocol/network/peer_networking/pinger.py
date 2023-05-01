@@ -19,7 +19,7 @@ class Pinger(threading.Thread):
 
     def run(self):
         Logger.get_logger().info("Pinger Started")
-
+        time.sleep(1)
         while not self.terminate_flag.is_set():
             ping_packet = KeepAlivePacket()
             try:

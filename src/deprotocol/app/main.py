@@ -1,5 +1,3 @@
-import signal
-
 from deprotocol.app.application import DeProtocol
 
 

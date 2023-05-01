@@ -13,7 +13,7 @@ from deprotocol.app.logger import Logger  # pylint: disable=import-error
 
 def generate_keys():
     """ Generate a pair public,private key for data exchange encryption purposes """
-    private_key = RSA.generate(1024)
+    private_key = RSA.generate(2048)
     public_key = private_key.publickey()
     Logger.get_logger().trace(f'crypto_funcs: Generated Private Key: \n{private_key.export_key().decode()}')
     Logger.get_logger().trace(f'crypto_funcs: Generated Public Key: \n{public_key.export_key().decode()}')

@@ -1,4 +1,3 @@
-import json
 import socket
 import threading
 import time
@@ -6,7 +5,6 @@ import time
 import socks
 
 from deprotocol.app.user import User
-from deprotocol.event.events.packet_received_event import PacketReceivedEvent
 from deprotocol.app.logger import Logger
 from deprotocol.network.peer_networking.handler.received_packet_handler import ReceivedPacketHandler
 from deprotocol.network.peer_networking.pinger import Pinger
@@ -18,9 +16,9 @@ from deprotocol.utils import crypto_funcs as cf
 
 
 class NodeConnection(threading.Thread):
-    def __init__(self, deprotocol, sock, id):
+    def __init__(self, deprotocol, sock, node_id):
         super().__init__()
-        self.id = id
+        self.id = node_id
         self.deprotocol = deprotocol
         socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, '127.0.0.1', 9050)
         self.sock = sock

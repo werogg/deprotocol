@@ -47,7 +47,7 @@ class ConnectionHandler(threading.Thread):
         with Socket(self.network_manager.host, self.network_manager.port) as sock:
             while not self.terminate_flag.is_set():
                 try:
-                    conn, host = sock.accept()
+                    conn, _ = sock.accept()
                     Logger.get_logger().info("Connection created with a client1.")
                     new_connection = self.create_new_connection(self.deprotocol, conn)
                     self.network_manager.node_connections.append(new_connection)

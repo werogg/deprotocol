@@ -10,7 +10,6 @@ from deprotocol.event.event_listener import Listener
 from deprotocol.event.events.deprotocol_ready_event import DeProtocolReadyEvent
 from deprotocol.event.events.packet_received_event import PacketReceivedEvent
 from deprotocol.network.protocol.type import PacketType
-from deprotocol.settings import USE_CONSOLE
 
 
 class DeProtocolReadyListener(Listener):
@@ -33,7 +32,6 @@ class PacketReceivedListener(Listener):
 
 @given('two clients of DeProtocol')
 def step_impl(context):
-    USE_CONSOLE = False
     context.deprotocol_client1 = Client()
     context.deprotocol_client2 = Client()
     listener = DeProtocolReadyListener()

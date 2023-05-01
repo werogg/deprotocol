@@ -7,7 +7,6 @@ import stem.control
 import stem.process
 
 from deprotocol.app.logger import Logger
-from deprotocol.settings import DATA_DIR
 from deprotocol.settings import HIDDEN_SERVICE_DIR
 from deprotocol.settings import HIDDEN_SERVICE_HOST
 from deprotocol.settings import HIDDEN_SERVICE_FORWARD_PORT

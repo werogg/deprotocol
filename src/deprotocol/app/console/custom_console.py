@@ -1,9 +1,7 @@
 import curses
 import logging
-import signal
 import threading
 
-from deprotocol.app.console.command.command_handler import CommandHandler
 from deprotocol.app.logger import Logger
 
 

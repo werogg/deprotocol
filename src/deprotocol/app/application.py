@@ -1,8 +1,6 @@
 import platform
 import signal
-import sys
 from abc import ABC
-from time import sleep
 
 from deprotocol.app.console.command.command_connect import CommandConnect
 from deprotocol.app.console.command.command_handler import CommandHandler
@@ -37,8 +35,6 @@ class DeProtocol(ABC):
         self.node.stop()
         self.setups['tor'].stop()
         Logger.get_logger().info("Successfully stopped! Bye...")
-        sleep(2)
-        #sys.exit(0)
 
     def on_start(self, proxy_host='127.0.0.1', proxy_port=9050):
         signal.signal(signal.SIGINT, self.on_stop)
