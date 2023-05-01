@@ -33,7 +33,7 @@ class TorService:
                     'HiddenServiceDir': HIDDEN_SERVICE_DIR,
                     'HiddenServicePort': f'{HIDDEN_SERVICE_VIRTUAL_PORT} {HIDDEN_SERVICE_HOST}:{HIDDEN_SERVICE_FORWARD_PORT}'
                 },
-                tor_cmd=os.path.join(os.getcwd(), TOR_BINARIES_PATH),
+                tor_cmd=TOR_BINARIES_PATH,
                 init_msg_handler=self._print_bootstrap_lines,
                 take_ownership=True
             )

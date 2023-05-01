@@ -43,11 +43,14 @@ TOR_BINARIES = {
 if system_os not in TOR_BINARIES:
     raise ValueError(f'Unsupported operating system: {system_os}')
 
-TOR_BINARIES_URL = TOR_BINARIES[system_os]['url']
-TOR_BINARIES_PATH = TOR_BINARIES[system_os]['path']
-TOR_BINARIES_FILENAME = 'tor.tar.gz'
-DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
+DATA_DIR = os.path.join(os.getcwd(), 'data')
+BIN_DIR = os.path.join(os.getcwd(), 'data', 'bin')
+
 TOR_DATA_DIR = os.path.join('tor_data')
 HIDDEN_SERVICE_DIR = os.path.join('hidden_service')
+TOR_BINARIES_URL = TOR_BINARIES[system_os]['url']
+TOR_BINARIES_PATH = os.path.join(DATA_DIR, TOR_BINARIES[system_os]['path'])
+TOR_BINARIES_FILENAME = 'tor.tar.gz'
+TOR_BINARIES_DIR = os.path.join(DATA_DIR, 'bin', TOR_BINARIES_FILENAME)
 
 

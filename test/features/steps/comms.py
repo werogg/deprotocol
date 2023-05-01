@@ -1,10 +1,9 @@
-import asyncio
+import os
 import sys
 import threading
 from asyncio import Event
 
 from behave import *
-
 from deprotocol.api.client import Client
 from deprotocol.event.event_listener import Listener
 from deprotocol.event.events.deprotocol_ready_event import DeProtocolReadyEvent
