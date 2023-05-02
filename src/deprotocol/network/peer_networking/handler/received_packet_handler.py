@@ -1,6 +1,7 @@
 from deprotocol.event.events.packet_received_event import PacketReceivedEvent
 from deprotocol.network.peer_networking.handler.handshake_packet_handler import HandshakePacketHandler
 from deprotocol.network.peer_networking.handler.keepalive_packet_handler import KeepAlivePacketHandler
+from deprotocol.network.peer_networking.handler.message_packet_handler import MessagePacketHandler
 from deprotocol.network.protocol.type import PacketType
 
 
@@ -10,6 +11,7 @@ class ReceivedPacketHandler:
         self.packet_type_handlers = {
             PacketType.HANDSHAKE: HandshakePacketHandler(node_connection),
             PacketType.KEEP_ALIVE: KeepAlivePacketHandler(node_connection),
+            PacketType.MESSAGE: MessagePacketHandler(node_connection)
         }
 
     def handle_received_packet(self, received_packet):

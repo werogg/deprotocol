@@ -21,6 +21,8 @@ class Packet:
 
     @classmethod
     def from_bytes(cls, byte_data):
+
+
         header = byte_data[:cls.HEADER_LENGTH]
         payload = byte_data[cls.HEADER_LENGTH:]
         protocol_version, packet_type, sequence_number, payload_length = struct.unpack('!BBIH', header)

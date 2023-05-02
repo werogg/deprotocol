@@ -16,6 +16,10 @@ class Client:
     def connect(self, address, port=NODE_PORT):
         self.app.node.connect_to(address, port)
 
+    def send_message(self, node_id, message):
+        node = next(node for node in self.app.node.network_manager.node_connections if node.id is node_id)
+        node.send_message(message)
+
     def get_connected_nodes(self):
         return self.app.node.get_connected_nodes()
 

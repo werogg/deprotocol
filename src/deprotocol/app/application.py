@@ -9,6 +9,8 @@ from deprotocol.app.console.command.command_quit import CommandQuit
 from deprotocol.app.listeners.packet_received_listener import PacketReceivedListener
 from deprotocol.app.user import User
 from deprotocol.event.event_listener import Listeners
+from deprotocol.network.protocol.packet_factory import PacketFactory
+from deprotocol.network.protocol.type import PacketType
 from deprotocol.version import APP_VERSION
 
 from deprotocol.settings import APP_NAME
@@ -39,6 +41,7 @@ class DeProtocol(ABC):
     def on_start(self, proxy_host='127.0.0.1', proxy_port=9050):
         signal.signal(signal.SIGINT, self.on_stop)
         signal.signal(signal.SIGTERM, self.on_stop)
+        self.register_packets()
         self.register_default_events()
         self.register_default_commands()
 
@@ -72,6 +75,9 @@ class DeProtocol(ABC):
 
     def register_listener(self, listener):
         self.listeners.register_listener(listener)
+
+    def register_packets(self):
+        PacketFactory.register_packet_type(PacketType.MESSAGE, 'deprotocol.network.protocol.packets.message', 'MessagePacket')
 
     def register_command(self, command_name, command):
         self.command_handler.register_command(command_name, command)

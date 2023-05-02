@@ -1,9 +1,12 @@
 import json
 
+from deprotocol.network.protocol.payloads.payload import Payload
 
-class HandshakePayload:
+
+class HandshakePayload(Payload):
 
     def __init__(self, address, nickname, profile_img, public_key):
+        super().__init__()
         self.address = address
         self.nickname = nickname
         self.profile_img = profile_img

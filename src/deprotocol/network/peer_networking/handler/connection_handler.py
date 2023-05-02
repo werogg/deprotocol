@@ -40,8 +40,10 @@ class ConnectionHandler(threading.Thread):
         Logger.get_logger().info(
             f"NodeConnection.send: Started with client ({address}) ':{str(port)}'"
         )
+        new_connection = self.create_new_connection(self.deprotocol, sock)
+        new_connection.start()
 
-        return self.create_new_connection(self.deprotocol, sock).start()
+        return new_connection
 
     def run(self):
         with Socket(self.network_manager.host, self.network_manager.port) as sock:

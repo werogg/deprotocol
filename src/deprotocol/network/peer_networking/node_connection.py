@@ -11,6 +11,7 @@ from deprotocol.network.peer_networking.pinger import Pinger
 from deprotocol.network.protocol.packet_factory import PacketFactory
 from deprotocol.network.protocol.packet_handler import PacketHandler
 from deprotocol.network.protocol.payloads.handshake_payload import HandshakePayload
+from deprotocol.network.protocol.payloads.message_payload import MessagePayload
 from deprotocol.network.protocol.type import PacketType
 from deprotocol.utils import crypto_funcs as cf
 
@@ -23,13 +24,14 @@ class NodeConnection(threading.Thread):
         socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, '127.0.0.1', 9050)
         self.sock = sock
         self.pinger = None
-        self.packet_handler = PacketHandler(sock)
         self.terminate_flag = threading.Event()
         self.handshake = False
         self.public_key, self.private_key = cf.generate_keys()
         self.connected_public_key = None
         self.connected_address = None
         self.user = User()
+        self.messages = []
+        self.packet_handler = PacketHandler(sock, self.private_key)
 
     def start(self):
         self.pinger = Pinger(self)
@@ -45,6 +47,12 @@ class NodeConnection(threading.Thread):
 
     def send_packet(self, packet):
         self.packet_handler.send_packet(packet)
+
+    def send_message(self, message):
+        self.send_packet(PacketFactory.create_packet(
+            PacketType.MESSAGE,
+            MessagePayload(message).serialize()
+        ))
 
     def stop(self):
         self.pinger.stop()

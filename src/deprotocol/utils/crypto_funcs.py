@@ -21,18 +21,16 @@ def generate_keys():
     return public_key, private_key
 
 
-def encrypt(message, key):
-    """ Encrypt a str message using a key """
-    message = json.dumps(message).encode("utf-8")
+def encrypt(bytes, key):
+    """ Encrypt bytes using a key """
     cipher = PKCS1_OAEP.new(key)
-    return base64.b64encode(cipher.encrypt(message)).decode("utf-8")
+    return base64.b64encode(cipher.encrypt(bytes))
 
 
-def decrypt(message, key):
+def decrypt(bytes, key):
     """ Decrypt a str message using a key"""
     cipher = PKCS1_OAEP.new(key)
-    message = cipher.decrypt(base64.b64decode(message))
-    return json.loads(message)
+    return cipher.decrypt(base64.b64decode(bytes))
 
 
 def load_key(key):

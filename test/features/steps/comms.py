@@ -1,6 +1,5 @@
-import os
-import sys
 import threading
+import time
 from asyncio import Event
 
 from behave import *
@@ -35,12 +34,13 @@ def step_impl(context):
     context.deprotocol_client2 = Client()
     listener = DeProtocolReadyListener()
     context.listener2 = PacketReceivedListener()
+    context.listener3 = PacketReceivedListener()
 
     context.deprotocol_client1.register_listener(listener)
     context.deprotocol_client2.register_listener(listener)
 
     context.deprotocol_client1.register_listener(context.listener2)
-    context.deprotocol_client2.register_listener(context.listener2)
+    context.deprotocol_client2.register_listener(context.listener3)
 
     context.deprotocol_client1.start()
     context.deprotocol_client2.start()
@@ -53,9 +53,12 @@ def step_when_client_connect_other_client(context):
 
 @then('they do a handshake')
 def step_then_they_do_a_handshake(context):
-    while not context.listener2.event.is_set():
+    while not context.listener2.event.is_set() and context.listener3.event.is_set():
         pass
     assert context.listener2.received_event.packet.TYPE == PacketType.HANDSHAKE
+
+    context.deprotocol_client1.send_message(0, "pene")
+    time.sleep(2)
 
 
 @then('stop the clients')

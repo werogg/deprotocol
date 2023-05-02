@@ -13,4 +13,5 @@ class HandshakePacketHandler(PacketTypeHandler):
         self.node_connection.user.nickname = payload['nickname']
         self.node_connection.user.profile_img = payload['profile_img']
         self.node_connection.connected_public_key = payload['public_key']
+        self.node_connection.packet_handler.packet_encrypter.populate_public_key(payload['public_key'])
         self.node_connection.handshake = True
