@@ -8,12 +8,12 @@ from Crypto.Hash import SHA256
 from Crypto.PublicKey import RSA
 from Crypto.Signature import PKCS1_v1_5
 
-from deprotocol.logger.logger import Logger  # pylint: disable=import-error
+from deprotocol.app.logger import Logger  # pylint: disable=import-error
 
 
 def generate_keys():
     """ Generate a pair public,private key for data exchange encryption purposes """
-    private_key = RSA.generate(1024)
+    private_key = RSA.generate(2048)
     public_key = private_key.publickey()
     Logger.get_logger().trace(f'crypto_funcs: Generated Private Key: \n{private_key.export_key().decode()}')
     Logger.get_logger().trace(f'crypto_funcs: Generated Public Key: \n{public_key.export_key().decode()}')
@@ -21,18 +21,16 @@ def generate_keys():
     return public_key, private_key
 
 
-def encrypt(message, key):
-    """ Encrypt a str message using a key """
-    message = json.dumps(message).encode("utf-8")
+def encrypt(bytes, key):
+    """ Encrypt bytes using a key """
     cipher = PKCS1_OAEP.new(key)
-    return base64.b64encode(cipher.encrypt(message)).decode("utf-8")
+    return base64.b64encode(cipher.encrypt(bytes))
 
 
-def decrypt(message, key):
+def decrypt(bytes, key):
     """ Decrypt a str message using a key"""
     cipher = PKCS1_OAEP.new(key)
-    message = cipher.decrypt(base64.b64decode(message))
-    return json.loads(message)
+    return cipher.decrypt(base64.b64decode(bytes))
 
 
 def load_key(key):

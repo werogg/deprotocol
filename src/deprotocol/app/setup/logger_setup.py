@@ -1,7 +1,7 @@
 import logging
 
 from deprotocol.app.setup.setup import SetupABC
-from deprotocol.logger.logger import Logger
+from deprotocol.app.logger import Logger
 from deprotocol.settings import LOG_LEVEL
 
 

@@ -1,28 +1,30 @@
-from deprotocol.api.handlers.message_handler import MessageHandler
 from deprotocol.app.application import DeProtocol
-from deprotocol.p2p.deprecated_node import PORT
+from deprotocol.settings import NODE_PORT
 
 
 class Client:
 
     def __init__(self):
         self.app = DeProtocol()
-        self.message_handler = MessageHandler()
 
     def start(self, proxy_host='127.0.0.1', proxy_port=9050):
         self.app.on_start(proxy_host, proxy_port)
 
-    def get_onion_address(self):
-        return self.app.node.connected_host
+    def stop(self):
+        self.app.on_stop()
 
-    def get_port(self):
-        return self.app.node.connected_port
+    def connect(self, address, port=NODE_PORT):
+        self.app.node.connect_to(address, port)
 
-    def connect(self, host, port=PORT):
-        self.app.node.connect_to(host, port)
+    def send_message(self, node_id, message):
+        node = next(node for node in self.app.node.network_manager.node_connections if node.id is node_id)
+        node.send_message(message)
 
-    def get_peers(self):
-        return self.app.node.peers
+    def get_connected_nodes(self):
+        return self.app.node.get_connected_nodes()
 
-    def send_message(self, peer, message):
-        self.app.node.send_message(peer, message)
+    def register_listener(self, listener):
+        self.app.register_listener(listener)
+
+    def get_address(self):
+        return self.app.node.onion_address
