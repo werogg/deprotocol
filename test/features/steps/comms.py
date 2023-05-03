@@ -6,6 +6,7 @@ from behave import *
 from deprotocol.api.client import Client
 from deprotocol.event.event_listener import Listener
 from deprotocol.event.events.deprotocol_ready_event import DeProtocolReadyEvent
+from deprotocol.event.events.handshake_received_event import HandshakeReceivedEvent
 from deprotocol.event.events.packet_received_event import PacketReceivedEvent
 from deprotocol.network.protocol.type import PacketType
 
@@ -15,6 +16,26 @@ class DeProtocolReadyListener(Listener):
         self.event = Event()
 
     def handle_event(self, event: DeProtocolReadyEvent):
+        self.event.set()
+
+
+class HandshakeOneListeners(Listener):
+    def __init__(self):
+        self.event = threading.Event()
+        self.received_event = None
+
+    def handle_event(self, event: HandshakeReceivedEvent):
+        self.received_event = event
+        self.event.set()
+
+
+class HandshakeTwoListeners(Listener):
+    def __init__(self):
+        self.event = threading.Event()
+        self.received_event = None
+
+    def handle_event(self, event: HandshakeReceivedEvent):
+        self.received_event = event
         self.event.set()
 
 
@@ -33,11 +54,8 @@ def step_impl(context):
     context.deprotocol_client1 = Client()
     context.deprotocol_client2 = Client()
     listener = DeProtocolReadyListener()
-    context.listener2 = PacketReceivedListener()
-    context.listener3 = PacketReceivedListener()
-
-    context.deprotocol_client1.register_listener(listener)
-    context.deprotocol_client2.register_listener(listener)
+    context.listener2 = HandshakeOneListeners()
+    context.listener3 = HandshakeTwoListeners()
 
     context.deprotocol_client1.register_listener(context.listener2)
     context.deprotocol_client2.register_listener(context.listener3)
@@ -56,9 +74,23 @@ def step_then_they_do_a_handshake(context):
     while not context.listener2.event.is_set() and context.listener3.event.is_set():
         pass
     assert context.listener2.received_event.packet.TYPE == PacketType.HANDSHAKE
+    assert context.listener3.received_event.packet.TYPE == PacketType.HANDSHAKE
 
     context.deprotocol_client1.send_message(0, "pene")
     time.sleep(2)
+
+
+"""
+@then('client 1 writes a message to client 2')
+def step_then_they_do_a_handshake(context):
+    while not context.listener2.event.is_set() and context.listener3.event.is_set():
+        pass
+    assert context.listener1.received_event.packet.TYPE == PacketType.HANDSHAKE
+    assert context.listener2.received_event.packet.TYPE == PacketType.HANDSHAKE
+
+    context.deprotocol_client1.send_message(0, "pene")
+    time.sleep(2)
+"""
 
 
 @then('stop the clients')

@@ -29,16 +29,13 @@ class ConsoleUI(threading.Thread):
             self.loop(stdscr)
         except KeyboardInterrupt:
             Logger.get_logger().error("User requested stopping the protocol, stopping!")
-            self.stop()
         except Exception as exc:
             Logger.get_logger().error(f"An exception is stopping DeProtocol! ({exc})")
-            self.stop()
         finally:
             self.deprotocol.on_stop()
 
     def stop(self):
         self.terminate_flag.set()
-        self.deprotocol.on_stop()
 
     def loop(self, stdscr):
         # Clear the screen and hide the cursor

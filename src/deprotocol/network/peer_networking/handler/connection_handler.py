@@ -68,8 +68,8 @@ class ConnectionHandler(threading.Thread):
         return NodeConnection(deprotocol, conn, len(self.network_manager.node_connections))
 
     def stop(self):
-        self.close_all_connections()
         self.terminate_flag.set()
+        self.close_all_connections()
 
     def close_all_connections(self):
         for conn in self.network_manager.node_connections:

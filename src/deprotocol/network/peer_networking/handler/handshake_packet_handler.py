@@ -1,5 +1,6 @@
 import json
 
+from deprotocol.event.events.handshake_received_event import HandshakeReceivedEvent
 from deprotocol.network.peer_networking.handler.packet_type_handler import PacketTypeHandler
 
 
@@ -15,3 +16,6 @@ class HandshakePacketHandler(PacketTypeHandler):
         self.node_connection.connected_public_key = payload['public_key']
         self.node_connection.packet_handler.packet_encrypter.populate_public_key(payload['public_key'])
         self.node_connection.handshake = True
+
+        event = HandshakeReceivedEvent(received_packet)
+        self.node_connection.deprotocol.listeners.fire(event)

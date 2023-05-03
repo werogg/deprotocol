@@ -5,7 +5,11 @@ from abc import ABC
 from deprotocol.app.console.command.command_connect import CommandConnect
 from deprotocol.app.console.command.command_handler import CommandHandler
 from deprotocol.app.console.command.command_help import CommandHelp
+from deprotocol.app.console.command.command_message import CommandMessage
 from deprotocol.app.console.command.command_quit import CommandQuit
+from deprotocol.app.listeners.handshake_received_listener import HandshakeReceivedListener
+from deprotocol.app.listeners.keepalive_received_listener import KeepAliveReceivedListener
+from deprotocol.app.listeners.message_received_listener import MessageReceivedListener
 from deprotocol.app.listeners.packet_received_listener import PacketReceivedListener
 from deprotocol.app.user import User
 from deprotocol.event.event_listener import Listeners
@@ -36,8 +40,8 @@ class DeProtocol(ABC):
     def on_stop(self):
         self.node.stop()
         self.setups['tor'].stop()
+        self.setups['console'].shell.stop()
         Logger.get_logger().info("Successfully stopped! Bye...")
-
     def on_start(self, proxy_host='127.0.0.1', proxy_port=9050):
         signal.signal(signal.SIGINT, self.on_stop)
         signal.signal(signal.SIGTERM, self.on_stop)
@@ -67,17 +71,22 @@ class DeProtocol(ABC):
 
     def register_default_events(self):
         self.register_listener(PacketReceivedListener())
+        self.register_listener(MessageReceivedListener())
+        self.register_listener(KeepAliveReceivedListener())
+        self.register_listener(HandshakeReceivedListener())
 
     def register_default_commands(self):
         self.register_command('help', CommandHelp)
         self.register_command('connect', CommandConnect(self))
         self.register_command('quit', CommandQuit(self))
+        self.register_command('message', CommandMessage(self))
 
     def register_listener(self, listener):
         self.listeners.register_listener(listener)
 
     def register_packets(self):
-        PacketFactory.register_packet_type(PacketType.MESSAGE, 'deprotocol.network.protocol.packets.message', 'MessagePacket')
+        PacketFactory.register_packet_type(PacketType.MESSAGE, 'deprotocol.network.protocol.packets.message',
+                                           'MessagePacket')
 
     def register_command(self, command_name, command):
         self.command_handler.register_command(command_name, command)

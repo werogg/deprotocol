@@ -5,7 +5,7 @@ import platform
 import socks
 
 APP_NAME = 'DeProtocol'
-USE_CONSOLE = False
+USE_CONSOLE = True
 PROXY_HOST = '127.0.0.1'
 PROXY_PORT = 9050
 PROXY_TYPE = socks.PROXY_TYPE_SOCKS5

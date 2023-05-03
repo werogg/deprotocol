@@ -3,11 +3,7 @@ from deprotocol.app.application import DeProtocol
 
 def main():
     deprotocol = DeProtocol()
-
-    try:
-        deprotocol.on_start()
-    except (KeyboardInterrupt, Exception):
-        deprotocol.on_stop()
+    deprotocol.on_start()
 
 
 if __name__ == '__main__':

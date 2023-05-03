@@ -55,8 +55,9 @@ class NodeConnection(threading.Thread):
         ))
 
     def stop(self):
-        self.pinger.stop()
         self.terminate_flag.set()
+        self.pinger.stop()
+        self.sock.close()
 
     def handle_received_packet(self, received_packet):
         received_packet_handler = ReceivedPacketHandler(self)
@@ -77,7 +78,4 @@ class NodeConnection(threading.Thread):
                     Logger.get_logger().error("NodeConnection: timeout")
                 except Exception as e:
                     self.terminate_flag.set()
-                    Logger.get_logger().error("NodeConnection: Socket has been terminated")
-                    Logger.get_logger().error(e)
-        self.sock.close()
-        self.pinger.stop()
+                    Logger.get_logger().error(f"NodeConnection: Socket has been terminated -> {e}")
