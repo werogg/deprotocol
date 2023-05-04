@@ -3,6 +3,7 @@ import signal
 from abc import ABC
 
 from deprotocol.app.console.command.command_connect import CommandConnect
+from deprotocol.app.console.command.command_connections import CommandConnections
 from deprotocol.app.console.command.command_handler import CommandHandler
 from deprotocol.app.console.command.command_help import CommandHelp
 from deprotocol.app.console.command.command_message import CommandMessage
@@ -85,6 +86,7 @@ class DeProtocol(ABC):
         self.register_command('connect', CommandConnect(self))
         self.register_command('quit', CommandQuit(self))
         self.register_command('message', CommandMessage(self))
+        self.register_command('connections', CommandConnections(self))
 
     def register_default_packets(self):
         PacketFactory.register_packet_type(PacketType.HANDSHAKE, 'deprotocol.network.protocol.packets.handshake',
