@@ -11,7 +11,7 @@ class ConsoleSetup(SetupABC):
         self.deprotocol = deprotocol
 
     def setup(self):
-        if USE_CONSOLE:
+        if USE_CONSOLE and not self.deprotocol.testing:
             Logger.get_logger().warning("Running DeProtocol in CONSOLE MODE!")
             self.shell = ConsoleUI(self.deprotocol)
             self.shell.start()

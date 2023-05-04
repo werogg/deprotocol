@@ -30,18 +30,23 @@ from deprotocol.settings import NODE_PORT
 
 class DeProtocol(ABC):
 
-    def __init__(self):
+    def __init__(self, testing=False):
         self.setups = {}
         self.listeners = Listeners()
         self.command_handler = CommandHandler(self)
         self.node = None
         self.user = User()
+        self.testing = testing
 
     def on_stop(self):
-        self.node.stop()
-        self.setups['tor'].stop()
-        self.setups['console'].shell.stop()
+        if self.node:
+            self.node.stop()
+        if self.setups['tor']:
+            self.setups['tor'].stop()
+        if self.setups['console'].shell:
+            self.setups['console'].shell.stop()
         Logger.get_logger().info("Successfully stopped! Bye...")
+
     def on_start(self, proxy_host='127.0.0.1', proxy_port=9050):
         signal.signal(signal.SIGINT, self.on_stop)
         signal.signal(signal.SIGTERM, self.on_stop)

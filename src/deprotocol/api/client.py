@@ -4,8 +4,8 @@ from deprotocol.settings import NODE_PORT
 
 class Client:
 
-    def __init__(self):
-        self.app = DeProtocol()
+    def __init__(self, testing=False):
+        self.app = DeProtocol(testing)
 
     def start(self, proxy_host='127.0.0.1', proxy_port=9050):
         self.app.on_start(proxy_host, proxy_port)
