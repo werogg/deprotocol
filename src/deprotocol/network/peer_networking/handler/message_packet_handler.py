@@ -21,7 +21,7 @@ class MessagePacketHandler(PacketTypeHandler):
         Logger.get_logger().info(f"\nMessage from node {self.node_connection.id} received:\n"
                                  f"User: {self.node_connection.user.nickname}\n"
                                  f"Time: {formatted_time}\n"
-                                 f"Message: {payload['message']}")
+                                 f"Message: {' '.join(payload['message'])}")
 
         event = MessageReceivedEvent(received_packet, self.node_connection)
         self.node_connection.deprotocol.listeners.fire(event)
