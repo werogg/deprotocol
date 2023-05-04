@@ -53,4 +53,6 @@ TOR_BINARIES_PATH = os.path.join(DATA_DIR, TOR_BINARIES[system_os]['path'])
 TOR_BINARIES_FILENAME = 'tor.tar.gz'
 TOR_BINARIES_DIR = os.path.join(DATA_DIR, 'bin', TOR_BINARIES_FILENAME)
 
+TEST_SLOW_TIMEOUT = 5
+
 
