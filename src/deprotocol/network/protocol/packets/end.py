@@ -14,6 +14,3 @@ class EndConnectionPacket(Packet):
         if packet.type != cls.TYPE:
             raise ValueError('Packet type does not match')
         return cls()
-
-
-PacketFactory.register_packet_type(PacketType.END_CONNECTION, 'deprotocol.network.protocol.packets.end', 'EndConnectionPacket')

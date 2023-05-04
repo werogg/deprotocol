@@ -28,7 +28,3 @@ class FileTransferEndPacket(Packet):
         if packet.type != cls.TYPE:
             raise ValueError('Packet type does not match')
         return cls()
-
-
-PacketFactory.register_packet_type(PacketType.FILE, 'deprotocol.network.protocol.packets.file', 'FileTransferPacket')
-PacketFactory.register_packet_type(PacketType.END_FILE, 'deprotocol.network.protocol.packets.file', 'FileTransferEndPacket')

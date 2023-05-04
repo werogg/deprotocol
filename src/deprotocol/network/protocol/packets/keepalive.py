@@ -14,6 +14,3 @@ class KeepAlivePacket(Packet):
         if packet.type != cls.TYPE:
             raise ValueError('Packet type does not match')
         return cls()
-
-
-PacketFactory.register_packet_type(PacketType.KEEP_ALIVE, 'deprotocol.network.protocol.packets.keepalive', 'KeepAlivePacket')

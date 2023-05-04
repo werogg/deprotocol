@@ -52,6 +52,7 @@ class DeProtocol(ABC):
         signal.signal(signal.SIGTERM, self.on_stop)
         self.register_default_events()
         self.register_default_commands()
+        self.register_packets()
 
         self.setups = {
             'console': ConsoleSetup(self),
@@ -87,6 +88,20 @@ class DeProtocol(ABC):
 
     def register_listener(self, listener):
         self.listeners.register_listener(listener)
+
+    def register_packets(self):
+        PacketFactory.register_packet_type(PacketType.HANDSHAKE, 'deprotocol.network.protocol.packets.handshake',
+                                           'HandshakePacket')
+        PacketFactory.register_packet_type(PacketType.END_CONNECTION, 'deprotocol.network.protocol.packets.end',
+                                           'EndConnectionPacket')
+        PacketFactory.register_packet_type(PacketType.KEEP_ALIVE, 'deprotocol.network.protocol.packets.keepalive',
+                                           'KeepAlivePacket')
+        PacketFactory.register_packet_type(PacketType.MESSAGE, 'deprotocol.network.protocol.packets.message',
+                                           'MessagePacket')
+        PacketFactory.register_packet_type(PacketType.FILE, 'deprotocol.network.protocol.packets.file',
+                                           'FileTransferPacket')
+        PacketFactory.register_packet_type(PacketType.END_FILE, 'deprotocol.network.protocol.packets.file',
+                                           'FileTransferEndPacket')
 
     def register_command(self, command_name, command):
         self.command_handler.register_command(command_name, command)
