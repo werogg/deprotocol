@@ -11,5 +11,5 @@ class KeepAlivePacketHandler(PacketTypeHandler):
     def handle_packet_type(self, received_packet):
         self.node_connection.pinger.last_ping = time.time()
 
-        event = KeepAliveReceivedEvent(received_packet)
+        event = KeepAliveReceivedEvent(received_packet, self.node_connection)
         self.node_connection.deprotocol.listeners.fire(event)
