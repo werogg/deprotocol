@@ -1,6 +1,7 @@
 import unittest
 from unittest.mock import MagicMock
 
+from deprotocol.app.application import DeProtocol
 from deprotocol.network.protocol.packets.end import EndConnectionPacket
 from deprotocol.network.protocol.packets.file import FileTransferPacket
 from deprotocol.network.protocol.packets.keepalive import KeepAlivePacket
@@ -14,6 +15,9 @@ from deprotocol.network.protocol.type import PacketType
 
 
 class TestPacketFactory(unittest.TestCase):
+    def setUp(self):
+        deprotocol = DeProtocol()
+        deprotocol.register_default_packets()
 
     def test_create_handshake_packet(self):
         packet = PacketFactory.create_packet(PacketType.HANDSHAKE, 'test')
