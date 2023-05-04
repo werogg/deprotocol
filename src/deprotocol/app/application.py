@@ -15,7 +15,7 @@ from deprotocol.app.user import User
 from deprotocol.event.event_listener import Listeners
 from deprotocol.network.protocol.packet_factory import PacketFactory
 from deprotocol.network.protocol.type import PacketType
-from deprotocol.version import APP_VERSION
+from deprotocol.__version__ import APP_VERSION
 
 from deprotocol.settings import APP_NAME
 
