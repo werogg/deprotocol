@@ -1,3 +1,4 @@
+import unittest
 from unittest.mock import MagicMock
 
 from deprotocol.network.protocol.packets.end import EndConnectionPacket
@@ -12,34 +13,40 @@ from deprotocol.network.protocol.packet_factory import PacketFactory
 from deprotocol.network.protocol.type import PacketType
 
 
-class TestPacketFactory:
+class TestPacketFactory(unittest.TestCase):
 
     def test_create_handshake_packet(self):
         packet = PacketFactory.create_packet(PacketType.HANDSHAKE, 'test')
-        assert isinstance(packet, HandshakePacket)
-        assert packet.payload == 'test'
+
+        self.assertTrue(isinstance(packet, HandshakePacket))
+        self.assertEqual('test', packet.payload)
 
     def test_create_message_packet(self):
         payload = 'test'
+
         packet = PacketFactory.create_packet(PacketType.MESSAGE, payload)
         packet.sequence_number = 123
-        assert isinstance(packet, MessagePacket)
-        assert 123 == packet.sequence_number
+
+        self.assertTrue(isinstance(packet, MessagePacket))
+        self.assertEqual(123, packet.sequence_number)
 
     def test_create_file_packet(self):
         payload = b'test'
+
         packet = PacketFactory.create_packet(PacketType.FILE, payload)
-        assert isinstance(packet, FileTransferPacket)
-        assert packet.payload == payload
+
+        self.assertTrue(isinstance(packet, FileTransferPacket))
+        self.assertEqual(payload, packet.payload)
 
     def test_create_keep_alive_packet(self):
         packet = PacketFactory.create_packet(PacketType.KEEP_ALIVE)
         packet.sequence_number = 0
-        assert isinstance(packet, KeepAlivePacket)
+
+        self.assertTrue(isinstance(packet, KeepAlivePacket))
 
     def test_create_end_connection_packet(self):
         packet = PacketFactory.create_packet(PacketType.END_CONNECTION)
-        assert isinstance(packet, EndConnectionPacket)
+        self.assertTrue(isinstance(packet, EndConnectionPacket))
 
     def test_register_packet_type(self):
         packet_type = PacketType.MESSAGE
@@ -47,4 +54,10 @@ class TestPacketFactory:
 
         PacketFactory.register_packet_type(packet_type, creator_fn.__class__.__module__, creator_fn)
 
-        assert PacketFactory._packet_classes[packet_type] == (creator_fn.__class__.__module__, creator_fn)
+        self.assertEqual((creator_fn.__class__.__module__, creator_fn), PacketFactory._packet_classes[packet_type])
+
+    def test_create_invalid_packet(self):
+        invalid_packet_type = MagicMock()
+
+        with self.assertRaises(ValueError):
+            PacketFactory.create_packet(invalid_packet_type)
