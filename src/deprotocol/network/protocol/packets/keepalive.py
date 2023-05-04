@@ -1,4 +1,3 @@
-from deprotocol.network.protocol.packet_factory import PacketFactory
 from deprotocol.network.protocol.packets.packet import Packet
 from deprotocol.network.protocol.type import PacketType
 
@@ -14,6 +13,3 @@ class KeepAlivePacket(Packet):
         if packet.type != cls.TYPE:
             raise ValueError('Packet type does not match')
         return cls()
-
-
-PacketFactory.register_packet_type(PacketType.KEEP_ALIVE, 'deprotocol.network.protocol.packets.keepalive', 'KeepAlivePacket')
