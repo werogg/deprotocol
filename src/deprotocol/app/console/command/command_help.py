@@ -8,4 +8,5 @@ class CommandHelp(Command):
                                  "- connect <onion.address> - connect to a peer using their onion address\n"
                                  "- connections - list all current connections\n"
                                  "- quit - disconnect from all peers and quit DeProtocol\n"
-                                 "- message <connection> <message> - send a message to a specific connection")
+                                 "- message <connection> <message> - send a message to a specific connection\n"
+                                 "- address - get you onion address")
