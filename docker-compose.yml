@@ -4,7 +4,7 @@ services:
   node1:
     build: .
     working_dir: /app
-    command: python main.py
+    command: python __main__.py
     networks:
       network1:
         ipv4_address: 172.16.238.10
@@ -12,7 +12,7 @@ services:
   node2:
     build: .
     working_dir: /app
-    command: python main.py
+    command: python __main__.py
     networks:
       network2:
         ipv4_address: 172.16.239.10

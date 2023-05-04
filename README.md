@@ -152,7 +152,7 @@ Install Python 3.10: You can download and install Python 3.10 from the official 
 
 1. Run the application
    ```sh
-   python src/deprotocol/app/main.py
+   python src/deprotocol/app/__main__.py
    ```
    
 ### Build
