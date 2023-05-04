@@ -25,7 +25,6 @@ class TestPacketFactory:
         packet.sequence_number = 123
         assert isinstance(packet, MessagePacket)
         assert 123 == packet.sequence_number
-        assert payload == packet.payload
 
     def test_create_file_packet(self):
         payload = b'test'

@@ -14,3 +14,6 @@ class MessagePacket(Packet):
         if packet.type != cls.TYPE:
             raise ValueError('Packet type does not match')
         return cls(packet.payload)
+
+
+PacketFactory.register_packet_type(PacketType.MESSAGE, 'deprotocol.network.protocol.packets.message', 'MessagePacket')
