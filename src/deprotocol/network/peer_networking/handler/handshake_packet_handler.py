@@ -17,5 +17,5 @@ class HandshakePacketHandler(PacketTypeHandler):
         self.node_connection.packet_handler.packet_encrypter.populate_public_key(payload['public_key'])
         self.node_connection.handshake = True
 
-        event = HandshakeReceivedEvent(received_packet)
+        event = HandshakeReceivedEvent(received_packet, self.node_connection)
         self.node_connection.deprotocol.listeners.fire(event)
