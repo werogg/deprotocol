@@ -1,5 +1,6 @@
 import threading
 
+from deprotocol.event.events.deprotocol_ready_event import DeProtocolReadyEvent
 from deprotocol.network.peer_networking.network_manager import NetworkManager
 from deprotocol.settings import NODE_PORT
 
@@ -14,6 +15,8 @@ class Node:
         self.onion_address = onion_address
         self.network_manager = NetworkManager(deprotocol, host, port, onion_address)
         deprotocol.node = self
+        event = DeProtocolReadyEvent()
+        self.deprotocol.listeners.fire(event)
 
     def start(self):
         self.network_manager.start()

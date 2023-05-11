@@ -18,9 +18,6 @@ class ConnectionHandler(threading.Thread):
         self.network_manager = network_manager
         self.terminate_flag = threading.Event()
 
-        event = DeProtocolReadyEvent()
-        self.deprotocol.listeners.fire(event)
-
     def connect_to(self, address, port):
         sock = socks.socksocket()
         sock.settimeout(60)

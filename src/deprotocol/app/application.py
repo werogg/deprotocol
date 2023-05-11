@@ -50,8 +50,6 @@ class DeProtocol(ABC):
         Logger.get_logger().info("Successfully stopped! Bye...")
 
     def on_start(self, proxy_host='127.0.0.1', proxy_port=9050):
-        signal.signal(signal.SIGINT, self.on_stop)
-        signal.signal(signal.SIGTERM, self.on_stop)
         self.register_default_events()
         self.register_default_commands()
         self.register_default_packets()
