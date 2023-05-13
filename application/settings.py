@@ -1,7 +1,9 @@
 import logging
 import platform
-
 import socks
+
+from application.utils.utils import get_free_port
+
 
 APP_NAME = 'DeProtocol'
 DEFAULT_LOG_LEVEL = logging.DEBUG
@@ -12,7 +14,7 @@ PROXY_PORT = 9050
 PROXY_TYPE = socks.PROXY_TYPE_SOCKS5
 
 NODE_HOST = '127.0.0.1'
-NODE_PORT = 65432
+NODE_PORT = get_free_port(65432)
 
 system_os = platform.system()
 
@@ -26,8 +28,8 @@ TOR_BINARIES = {
         'path': 'bin/tor/tor',
     },
     'Darwin': {
-        'url': 'https://dist.torproject.org/torbrowser/12.0.5/tor-expert-bundle-12.0.5-osx-x86_64.tar.gz',
-        'path': 'Contents/Resources/TorBrowser/Tor/tor',
+        'url': 'https://dist.torproject.org/torbrowser/12.0.5/tor-expert-bundle-12.0.5-macos-x86_64.tar.gz',
+        'path': 'bin/tor/tor',
     }
 }
 

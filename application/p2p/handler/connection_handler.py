@@ -5,12 +5,12 @@ from application.protocol.packet_handler import PacketHandler
 
 class ConnectionHandler:
     def __init__(self, conn, addr, node):
-        super().__init__()
         self.conn = conn
         self.addr = addr
         self.node = node
 
-    def start(self):
+    async def start(self):
+        print("Start")
         packet_handler = PacketHandler(self.conn)
 
         self.send_initial_packet(packet_handler)

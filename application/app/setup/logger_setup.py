@@ -11,7 +11,7 @@ class LoggerSetup(SetupABC):
     def __init__(self):
         self.logger = None
 
-    def setup(self):
+    async def setup(self):
         log_level = DEFAULT_LOG_LEVEL
 
         self.logger = Logger(name=APP_NAME, level=log_level)

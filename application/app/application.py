@@ -1,5 +1,7 @@
+import asyncio
 import platform
 from abc import ABC
+
 
 from application.app.setup.console_setup import ConsoleSetup
 from application.app.setup.logger_setup import LoggerSetup
@@ -16,9 +18,8 @@ class DeProtocol(ABC):
 
     def __init__(self):
         self.setups = {}
-        self.on_start()
 
-    def on_start(self, proxy_host='127.0.0.1', proxy_port=9050):
+    async def on_start(self, proxy_host='127.0.0.1', proxy_port=9050):
         self.setups = {
             'logger': LoggerSetup(),
             'tor': TorSetup(proxy_host, proxy_port),
@@ -26,9 +27,13 @@ class DeProtocol(ABC):
         }
 
         for setup in self.setups.values():
-            setup.setup()
+            await setup.setup()
 
-        ConsoleSetup(self.setups['p2p'].node, self.setups['tor'].tor_service).setup()
+        console = ConsoleSetup(self.setups['p2p'].node, self.setups['tor'].tor_service)
+        console.setup()
+        await console.shell.start()
+        await console.node.start()
+
 
         Logger.get_instance().info(f"Starting {APP_NAME} version {APP_VERSION}, running on {platform.system()}")
 

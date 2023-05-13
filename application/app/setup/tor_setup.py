@@ -14,7 +14,7 @@ class TorSetup(SetupABC):
         self.proxy_host = proxy_host
         self.proxy_port = proxy_port
 
-    def setup(self):
+    async def setup(self):
         # Configure socks to use Tor proxy by default
         socks.setdefaultproxy(PROXY_TYPE, self.proxy_host, self.proxy_port)
         Logger.get_instance().info(
@@ -22,9 +22,9 @@ class TorSetup(SetupABC):
 
         # Download and install Tor Client
         self.tor_client = TorUtils()
-        self.tor_client.download_and_install()
+        await self.tor_client.install()
 
         # Start Tor Service
         self.tor_service = TorService(9051)
-        self.tor_service.start()
+        await self.tor_service.start()
         Logger.get_instance().info("Tor Service started correctly!")

@@ -9,8 +9,7 @@ class P2PNodeSetup(SetupABC):
         self.node_host = node_host
         self.node_port = node_port
 
-    def setup(self):
+    async def setup(self):
         # Start Node
         self.node = Node(self.node_host, self.node_port)
-        self.node.start()
         Logger.get_instance().info(f"Node started correctly! Host:Port -> {self.node_host}:{self.node_port}")

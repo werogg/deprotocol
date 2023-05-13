@@ -1,21 +1,20 @@
-import threading
+import asyncio
 import time
 
 from application.logger.logger import Logger
 
 
-class DeConsole(threading.Thread):
-
+class DeConsole:
     def __init__(self, node, tor_service):
-        super().__init__()
         self.node = node
         self.tor_service = tor_service
-        self.terminate_flag = threading.Event()
+        self.terminate_flag = asyncio.Event()
 
-    def run(self):
+    async def start(self):
+        Logger.get_instance().info("Console started correctly!")
         while not self.terminate_flag.is_set():
             try:
-                self.handle_console()
+                await self.handle_console()
             except KeyboardInterrupt:
                 Logger.get_instance().info("User requested stopping the protocol, stopping!")
                 self.stop()
@@ -27,8 +26,13 @@ class DeConsole(threading.Thread):
     def stop(self):
         self.terminate_flag.set()
 
-    def handle_console(self):
-        cmd = input("\nDEPROTO>")
+    async def handle_console(self):
+
+        async def async_input(prompt=''):
+            print(prompt, end='', flush=True)
+            return (await asyncio.get_running_loop().run_in_executor(None, input)).rstrip('\n')
+
+        cmd = await async_input("\nDEPROTO>")
         if cmd == "help":
             print(
                 """
@@ -42,12 +46,12 @@ class DeConsole(threading.Thread):
             )
         if "connect " in cmd:
             args = cmd.replace("connect ", "")
-            self.node.connect(args, port=65432)
+            await self.node.connect(args, port=65432)
 
         if "msg " in cmd:
             args = cmd.replace("msg ", "")
             Logger.get_instance().info(f"Sent message: {args}")
-            self.node.message("msg", args)
+            await self.node.message("msg", args)
 
         if cmd == "stop":
             self.node.stop()
@@ -73,7 +77,7 @@ class DeConsole(threading.Thread):
         print(f"Address: {self.tor_service.get_address()}")
         Logger.get_instance().info(self.node.peers)
         print("--------------")
-        for i in self.node.nodes_connected:
+        for i in self.node.node_connections:
             print(
                 i.id
                 + " ("

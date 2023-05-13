@@ -3,6 +3,7 @@ import hashlib
 import json
 import socket
 import threading
+import asyncio
 import time
 
 import socks
@@ -16,11 +17,11 @@ from application.p2p.proxied_socket import Socket
 from application.utils import crypto_funcs as cf
 
 
-class Node(threading.Thread):
+class Node:
     def __init__(self, host='', port=65432, onion_address=''):
-        super().__init__()
         self.packet_handler = None
-        self.terminate_flag = threading.Event()
+        self.terminate_flag = asyncio.Event()
+        self.loop = asyncio.get_running_loop()
         self.dead_time = 45
         self.host = host
         self.port = port
@@ -42,37 +43,60 @@ class Node(threading.Thread):
             self.peers.append(node.connected_host)
         # self.send_peers()
 
-    def run(self):
-        with Socket(self.host, self.port) as sock:
-            while not self.terminate_flag.is_set():
-                try:
-                    conn, addr = sock.accept()
-                    connection_handler = ConnectionHandler(conn, addr, self)
-                    connection_handler.start()
-                except socket.timeout:
-                    continue
-                except socket.error as exc:
-                    if exc.errno == errno.ECONNRESET:
-                        Logger.get_instance().error("SocketClosed: %s" % str(exc))
-                except Exception as exc:
-                    Logger.get_instance().error(exc)
+    async def start(self):
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        sock.settimeout(1)
+        sock.bind((self.host, self.port))
+        sock.listen(1)
 
-    def connect(self, host, port=PORT):
+        while not self.terminate_flag.is_set():
+            try:
+                conn, addr = await self.loop.sock_accept(sock)
+                connection_handler = ConnectionHandler(conn, addr, self)
+                self.loop.create_task(connection_handler.start())
+            except socket.timeout:
+                continue
+            except socket.error as exc:
+                if exc.errno == errno.ECONNRESET:
+                    Logger.get_instance().error("SocketClosed: %s" % str(exc))
+            except Exception as exc:
+                Logger.get_instance().error(exc)
+
+    async def connect(self, host, port=PORT):
         if self.is_valid_address(host):
             sock = socks.socksocket()
             sock.settimeout(60)
             sock.setproxy(socks.PROXY_TYPE_SOCKS5, "localhost", 9050, True)
 
             tor_controller = stem.control.Controller.from_port(port=9051)
-            tor_controller.authenticate()
-            tor_controller.new_circuit()
+            await tor_controller.authenticate()
+            await tor_controller.new_circuit()
 
             Logger.get_instance().info(f"connecting to {host} port {port}")
 
-            sock.connect((host, 80))
+            await self.loop.sock_connect(sock, (host, 80))
 
             connection_handler = ConnectionHandler(sock, (host, port), self)
-            connection_handler.start()
+            self.loop.create_task(connection_handler.start())
+
+    def is_valid_address(self, address):
+        if address in self.banned_address:
+            return False
+
+        if address == self.host:
+            return False
+
+        if address.startswith('127.'):
+            return False
+
+        if address.startswith('192.168.'):
+            return False
+
+        if address.startswith('10.'):
+            return False
+
+        return True
 
     def is_valid_address(self, address):
         if address is self.host or address in self.banned_address:
