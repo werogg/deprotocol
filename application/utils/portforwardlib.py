@@ -45,8 +45,8 @@ def discover():
     for _ in range(10):
         try:
             data, from_addr = sock.recvfrom(1024)
-            # ip = fromaddr[0]
-            # print "from ip: %s"%ip
+            ip = fromaddr[0]
+            print( "from ip: %s"%ip)
             parsed = re.findall(
                 r"(?P<name>.*?): (?P<value>.*?)\r\n", str(data, "utf-8")
             )
@@ -59,7 +59,7 @@ def discover():
             paths.append(router_path)
 
         except socket.error:
-            """no data yet"""
+            print("""no data yet""")
             break
     return paths
 
@@ -210,11 +210,11 @@ def get_my_ip(router_ip=None):
     return ret
 
 
-def forwardPort(
-        e_port, i_port, router, lan_ip, disable, protocol, time, description, verbose
-):
-    if verbose:
-        Logger.get_instance().info("Discovering routers...")
+def forwardPort():
+#         e_port, i_port, router, lan_ip, disable, protocol, time, description, verbose
+# ):
+#     if verbose:
+#         Logger.get_instance().info("Discovering routers...")
 
     res = discover()
 

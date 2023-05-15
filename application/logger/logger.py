@@ -7,7 +7,7 @@ class Logger:
     """ Represents a Logger object handles logging functionalities executed as a singleton"""
     _instance = None
 
-    def __init__(self, name, level=logging.INFO, fmt='[%(asctime)s] %(levelname)s: %(message)s',
+    def __init__(self, name: str, level=logging.INFO, fmt='[%(asctime)s] %(levelname)s: %(message)s',
                  datefmt='%Y-%m-%d %H:%M:%S'):
         self.logger = logging.getLogger(name)
         self.logger.setLevel(level)
@@ -28,22 +28,22 @@ class Logger:
 
         #stem_logger.addHandler(logging.StreamHandler())
 
-    def level(self, level="trace"):
+    def level(self, level="trace") -> None:
         self.logger.setLevel(level)
 
-    def info(self, msg, *args, **kwargs):
+    def info(self, msg: str, *args, **kwargs) -> None:
         """ Information prints in logging terms """
         self.logger.info(msg, *args, **kwargs)
 
-    def warning(self, msg, *args, **kwargs):
+    def warning(self, msg: str, *args, **kwargs) -> None:
         """ Warning prints in logging terms """
         self.logger.warning(msg, *args, **kwargs)
 
-    def error(self, msg, *args, **kwargs):
+    def error(self, msg: str, *args, **kwargs) -> None:
         """ Error prints in logging terms"""
         self.logger.error(msg, *args, **kwargs)
 
-    def debug(self, msg, *args, **kwargs):
+    def debug(self, msg: str, *args, **kwargs) -> None:
         """ Debug prints in logging terms """
         self.logger.debug(msg, *args, **kwargs)
 

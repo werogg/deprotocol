@@ -4,5 +4,5 @@ from abc import abstractmethod
 
 class SetupABC(ABC):
     @abstractmethod
-    def setup(self):
+    def setup(self) -> None:
         pass

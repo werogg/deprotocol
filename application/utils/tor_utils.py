@@ -7,13 +7,15 @@ import aiohttp
 import aiofiles
 
 from tqdm import tqdm
+import stem.control
 
 from application.logger.logger import Logger
 from application.settings import TOR_BINARIES_FILENAME
 from application.settings import TOR_BINARIES_URL
+from application.settings import CONTROL_PORT
 
 
-class TorUtils():
+class TorUtils:
 
     async def install(self):
         if os.path.isfile(TOR_BINARIES_FILENAME):
@@ -39,3 +41,24 @@ class TorUtils():
             Logger.get_instance().info('Tor Client binaries were successfully decompressed')
         except Exception as exc:
             Logger.get_instance().error(exc)
+
+    @staticmethod
+    async def establish_tor_connection(return_=False):
+        try:
+            tor_controller = stem.control.Controller.from_port(port=CONTROL_PORT)
+            await tor_controller.authenticate()
+            await tor_controller.new_circuit()
+            await asyncio.sleep(0.2)
+            if return_:
+                return tor_controller
+        except TypeError as exs:
+            Logger.get_instance().error(
+                """
+
+                You are using an outdated version of stem that does not support the current functionality of the protocol. 
+                Since pip does not detect the latest version of stem, install the current version in the following way:
+                1. pip uninstall stem
+                2. pip install git+https://github.com/torproject/stem.git
+                3. restart app
+                """)
+            raise exs

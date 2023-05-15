@@ -11,16 +11,16 @@ class Packet:
         self.payload = payload
 
     @property
-    def size(self):
+    def size(self) -> int:
         return self.HEADER_LENGTH + len(self.payload)
 
-    def to_bytes(self):
+    def to_bytes(self) -> bytes:
         payload_length = len(self.payload)
         header = struct.pack('!BBIH', self.PROTOCOL_VERSION, self.type.value, self.sequence_number, payload_length)
         return header + self.payload.encode()
 
     @classmethod
-    def from_bytes(cls, byte_data):
+    def from_bytes(cls, byte_data: bytes):
         header = byte_data[:cls.HEADER_LENGTH]
         payload = byte_data[cls.HEADER_LENGTH:]
         protocol_version, packet_type, sequence_number, payload_length = struct.unpack('!BBIH', header)

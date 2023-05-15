@@ -6,12 +6,10 @@ from application.settings import USE_CONSOLE
 
 class ConsoleSetup(SetupABC):
 
-    def __init__(self, node, tor_service):
-        self.shell = None
-        self.node = node
-        self.tor_service = tor_service
+    def __init__(self):
+        self.shell: DeConsole = None
 
-    def setup(self):
+    async def setup(self):
         if USE_CONSOLE:
             Logger.get_instance().warning("Running DeProtocol in CONSOLE MODE!")
-            self.shell = DeConsole(self.node, self.tor_service)
+            self.shell = DeConsole()
