@@ -1,5 +1,6 @@
 import threading
 
+from deprotocol.event.events.deprotocol_ready_event import DeProtocolReadyEvent
 from deprotocol.network.peer_networking.network_manager import NetworkManager
 from deprotocol.settings import NODE_PORT
 

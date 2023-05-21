@@ -27,7 +27,7 @@ class NetworkManager(threading.Thread):
 
     def connect_to(self, address, port=NODE_PORT):
         if self.is_valid_address(address):
-            node_connection = self.connection_handler.connect_to(address, port)
+            node_connection = self.connection_handler.connect_to(address, port, True)
             self.node_connections.append(node_connection)
 
     def disconnect_from(self, node):

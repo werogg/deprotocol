@@ -11,3 +11,4 @@ class HandshakeReceivedEvent(PacketReceivedEvent):
         self.nickname = payload['nickname']
         self.profile_img = payload['profile_img']
         self.connected_public_key = payload['public_key']
+        self.initiator = bool(payload['initiator'])
