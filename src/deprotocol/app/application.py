@@ -15,6 +15,7 @@ from deprotocol.app.listeners.message_received_listener import MessageReceivedLi
 from deprotocol.app.listeners.packet_received_listener import PacketReceivedListener
 from deprotocol.app.user import User
 from deprotocol.event.event_listener import Listeners
+from deprotocol.event.events.deprotocol_ready_event import DeProtocolReadyEvent
 from deprotocol.network.protocol.packet_factory import PacketFactory
 from deprotocol.network.protocol.type import PacketType
 from deprotocol.version import APP_VERSION
@@ -67,6 +68,9 @@ class DeProtocol(ABC):
         self.node.onion_address = self.setups['tor'].tor_service.get_address()
 
         Logger.get_logger().info(f"Starting {APP_NAME} version {APP_VERSION}, running on {platform.system()}")
+
+        event = DeProtocolReadyEvent()
+        self.listeners.fire(event)
 
     def set_nickname(self, nickname):
         self.user.nickname = nickname

@@ -17,7 +17,7 @@ from deprotocol.utils import crypto_funcs as cf
 
 
 class NodeConnection(threading.Thread):
-    def __init__(self, deprotocol, sock, node_id):
+    def __init__(self, deprotocol, sock, node_id, initiator=False):
         super().__init__()
         self.id = node_id
         self.deprotocol = deprotocol
@@ -29,6 +29,7 @@ class NodeConnection(threading.Thread):
         self.public_key, self.private_key = cf.generate_keys()
         self.connected_public_key = None
         self.connected_address = None
+        self.initiator = initiator
         self.user = User()
         self.messages = []
         self.packet_handler = PacketHandler(sock, self.private_key)
@@ -42,7 +43,8 @@ class NodeConnection(threading.Thread):
                 HandshakePayload(address=self.deprotocol.node.onion_address,
                                  nickname='default',
                                  profile_img='',
-                                 public_key=cf.serialize_key(self.public_key)).serialize()))
+                                 public_key=cf.serialize_key(self.public_key),
+                                 initiator=self.initiator).serialize()))
         super().start()
 
     def send_packet(self, packet):

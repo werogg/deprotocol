@@ -15,8 +15,6 @@ class Node:
         self.onion_address = onion_address
         self.network_manager = NetworkManager(deprotocol, host, port, onion_address)
         deprotocol.node = self
-        event = DeProtocolReadyEvent()
-        self.deprotocol.listeners.fire(event)
 
     def start(self):
         self.network_manager.start()
