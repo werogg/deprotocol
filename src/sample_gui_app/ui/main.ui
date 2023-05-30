@@ -65,6 +65,7 @@
      <string>Conexiones</string>
     </property>
     <addaction name="actionNew"/>
+    <addaction name="actionConfig"/>
    </widget>
    <addaction name="menuConexiones"/>
   </widget>
@@ -72,6 +73,11 @@
   <action name="actionNew">
    <property name="text">
     <string>Nueva...</string>
+   </property>
+  </action>
+  <action name="actionConfig">
+   <property name="text">
+    <string>Configurar...</string>
    </property>
   </action>
  </widget>

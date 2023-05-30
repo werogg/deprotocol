@@ -6,6 +6,7 @@ import socks
 
 from deprotocol.app.user import User
 from deprotocol.app.logger import Logger
+from deprotocol.app.user import UserHelper
 from deprotocol.network.peer_networking.handler.received_packet_handler import ReceivedPacketHandler
 from deprotocol.network.peer_networking.pinger import Pinger
 from deprotocol.network.protocol.packet_factory import PacketFactory
@@ -14,6 +15,7 @@ from deprotocol.network.protocol.payloads.handshake_payload import HandshakePayl
 from deprotocol.network.protocol.payloads.message_payload import MessagePayload
 from deprotocol.network.protocol.type import PacketType
 from deprotocol.utils import crypto_funcs as cf
+from deprotocol.utils.message_authenticator import MessageAuthenticator
 
 
 class NodeConnection(threading.Thread):
@@ -30,7 +32,7 @@ class NodeConnection(threading.Thread):
         self.connected_public_key = None
         self.connected_address = None
         self.initiator = initiator
-        self.user = User()
+        self.user = UserHelper.get_user_helper().get_user()
         self.messages = []
         self.packet_handler = PacketHandler(sock, self.private_key)
 
@@ -41,8 +43,8 @@ class NodeConnection(threading.Thread):
             PacketFactory.create_packet(
                 PacketType.HANDSHAKE,
                 HandshakePayload(address=self.deprotocol.node.onion_address,
-                                 nickname='default',
-                                 profile_img='',
+                                 nickname=self.user.nickname,
+                                 profile_img=self.user.profile_img,
                                  public_key=cf.serialize_key(self.public_key),
                                  initiator=self.initiator).serialize()))
         super().start()
@@ -53,7 +55,8 @@ class NodeConnection(threading.Thread):
     def send_message(self, message):
         self.send_packet(PacketFactory.create_packet(
             PacketType.MESSAGE,
-            MessagePayload(message).serialize()
+            MessagePayload(message,
+                           MessageAuthenticator.sign_message(message, self.private_key)).serialize()
         ))
 
     def stop(self):
@@ -66,7 +69,7 @@ class NodeConnection(threading.Thread):
         received_packet_handler.handle_received_packet(received_packet)
 
     def run(self):
-        self.sock.settimeout(60.0)
+        self.sock.settimeout(120.0)
 
         while not self.terminate_flag.is_set():
             if time.time() - self.pinger.last_ping > self.pinger.dead_time:

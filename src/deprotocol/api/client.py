@@ -1,4 +1,5 @@
 from deprotocol.app.application import DeProtocol
+from deprotocol.app.user import UserHelper
 from deprotocol.settings import NODE_PORT
 
 
@@ -28,3 +29,11 @@ class Client:
 
     def get_address(self):
         return self.app.node.onion_address
+
+    @staticmethod
+    def set_nickname(nickname):
+        UserHelper.get_user_helper().set_nickname(nickname)
+
+    @staticmethod
+    def set_profile_img(profile_img):
+        UserHelper.get_user_helper().set_profile_img(profile_img)

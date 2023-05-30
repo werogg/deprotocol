@@ -1,11 +1,15 @@
+import json
 from abc import ABC
 from abc import abstractmethod
 
 
 class Payload(ABC):
     def __init__(self):
-        pass
+        self.payload = {}
 
     @abstractmethod
-    def serialize(self):
+    def get_payload(self):
         pass
+
+    def serialize(self):
+        return json.dumps(self.get_payload())
