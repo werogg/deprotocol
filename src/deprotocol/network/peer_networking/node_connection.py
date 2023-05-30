@@ -6,6 +6,7 @@ import socks
 
 from deprotocol.app.user import User
 from deprotocol.app.logger import Logger
+from deprotocol.app.user import UserHelper
 from deprotocol.network.peer_networking.handler.received_packet_handler import ReceivedPacketHandler
 from deprotocol.network.peer_networking.pinger import Pinger
 from deprotocol.network.protocol.packet_factory import PacketFactory
@@ -31,7 +32,7 @@ class NodeConnection(threading.Thread):
         self.connected_public_key = None
         self.connected_address = None
         self.initiator = initiator
-        self.user = User()
+        self.user = UserHelper.get_user_helper().get_user()
         self.messages = []
         self.packet_handler = PacketHandler(sock, self.private_key)
 
@@ -42,8 +43,8 @@ class NodeConnection(threading.Thread):
             PacketFactory.create_packet(
                 PacketType.HANDSHAKE,
                 HandshakePayload(address=self.deprotocol.node.onion_address,
-                                 nickname='default',
-                                 profile_img='',
+                                 nickname=self.user.nickname,
+                                 profile_img=self.user.profile_img,
                                  public_key=cf.serialize_key(self.public_key),
                                  initiator=self.initiator).serialize()))
         super().start()

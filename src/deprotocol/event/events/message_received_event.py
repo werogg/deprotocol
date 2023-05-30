@@ -10,3 +10,4 @@ class MessageReceivedEvent(PacketReceivedEvent):
         self.time = payload['time']
         self.message = payload['message']
         self.verified = verified
+        self.nickname = node_connection.user.nickname

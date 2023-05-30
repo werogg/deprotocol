@@ -33,7 +33,7 @@ class MessageReceivedListener(Listener):
     def handle_event(self, event: MessageReceivedEvent):
         timestamp_dt = datetime.datetime.fromtimestamp(event.time)
         formatted_time = timestamp_dt.strftime("%d/%m/%Y - %H:%M")
-        self.app.handle_message(formatted_time, "default", event.message, event.node_connection.id)
+        self.app.handle_message(formatted_time, event.nickname, event.message, event.node_connection.id)
 
 
 class HandshakeReceivedListener(Listener):
@@ -61,18 +61,29 @@ class MainUI(QMainWindow):
         loadUi("ui\main.ui", self)
 
         self.actionNew.triggered.connect(self.newPressed)
+        self.actionConfig.triggered.connect(self.configPressed)
         self.pushButton.clicked.connect(self.sendMessage)
 
     def newPressed(self):
         dialog = NewDialog()
         result = dialog.exec_()
         if result == QDialog.Accepted:
+            tab_name = dialog.lineEdit.text()
             onion_address = dialog.lineEdit_2.text()
             new_widget = ChatWidget()
-            self.tabWidget.addTab(new_widget, onion_address)
+            self.tabWidget.addTab(new_widget, tab_name if tab_name != '' else onion_address)
             new_widget.resize(self.size())
             new_widget.show()
             self.deprotocol.connect(onion_address)
+
+    def configPressed(self):
+        dialog = NameDialog()
+        result = dialog.exec_()
+        if result == QDialog.Accepted:
+            nickname = dialog.lineEdit.text()
+            self.deprotocol.set_nickname(nickname)
+            profile_img = dialog.lineEdit_2.text()
+            self.deprotocol.set_profile_img(profile_img)
 
     def newMessage(self, time, username, message, connection_id):
         item = QtGui.QStandardItem(f"[{time}] {username}: {message}")
@@ -103,10 +114,17 @@ class MainUI(QMainWindow):
                                  Q_ARG(str, nickname),
                                  Q_ARG(str, address),
                                  Q_ARG(str, profile_img))
+
+
 class NewDialog(QDialog):
     def __init__(self):
         super(NewDialog, self).__init__()
         loadUi("ui\dialognew.ui", self)
+
+class NameDialog(QDialog):
+    def __init__(self):
+        super(NameDialog, self).__init__()
+        loadUi("ui\dialogname.ui", self)
 
 
 class MainApp:
@@ -136,7 +154,6 @@ class MainApp:
 
     def handle_init_handshake(self, nickname, address, profile_img):
         self.ui.newChat(nickname, address, profile_img)
-
 
 
 if __name__ == "__main__":
