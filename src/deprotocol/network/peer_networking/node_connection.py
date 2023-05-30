@@ -68,7 +68,7 @@ class NodeConnection(threading.Thread):
         received_packet_handler.handle_received_packet(received_packet)
 
     def run(self):
-        self.sock.settimeout(99999.0)
+        self.sock.settimeout(120.0)
 
         while not self.terminate_flag.is_set():
             if time.time() - self.pinger.last_ping > self.pinger.dead_time:
