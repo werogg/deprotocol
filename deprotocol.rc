@@ -16,12 +16,12 @@ VSVersionInfo(
         u'040904B0',
         [StringStruct(u'CompanyName', u'werogg'),
         StringStruct(u'FileDescription', u'Peer 2 Peer communication protocol working over Tor Network'),
-        StringStruct(u'FileVersion', u'0.0.2.0'),
+        StringStruct(u'FileVersion', u'0.0.3.0'),
         StringStruct(u'InternalName', u'deprotocol'),
         StringStruct(u'LegalCopyright', u'\xa9 Copyright (C) 2023 werogg'),
         StringStruct(u'OriginalFilename', u'deprotocol.exe'),
         StringStruct(u'ProductName', u'DeProtocol'),
-        StringStruct(u'ProductVersion', u'0.0.2.0')])
+        StringStruct(u'ProductVersion', u'0.0.3.0')])
       ]),
     VarFileInfo([VarStruct(u'Translation', [1033, 1200])])
   ]
