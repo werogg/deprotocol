@@ -21,16 +21,45 @@ def generate_keys():
     return public_key, private_key
 
 
-def encrypt(bytes, key):
-    """ Encrypt bytes using a key """
+def encrypt_chunk(chunk, key):
+    """ Encrypt a chunk of bytes using a key """
     cipher = PKCS1_OAEP.new(key)
-    return base64.b64encode(cipher.encrypt(bytes))
+    return cipher.encrypt(chunk)
 
 
-def decrypt(bytes, key):
-    """ Decrypt a str message using a key"""
+def decrypt_chunk(chunk, key):
+    """ Decrypt a chunk of bytes using a key """
     cipher = PKCS1_OAEP.new(key)
-    return cipher.decrypt(base64.b64decode(bytes))
+    return cipher.decrypt(chunk)
+
+
+def encrypt(data, key, chunk_size=214):
+    """ Encrypt bytes using a key in chunks """
+    encrypted_chunks = []
+
+    # Encrypt the bytes in chunks
+    for i in range(0, len(data), chunk_size):
+        chunk = data[i:i + chunk_size]
+        encrypted_chunk = encrypt_chunk(chunk, key)
+        encrypted_chunks.append(encrypted_chunk)
+
+    # Concatenate the encrypted chunks and return as base64 encoded string
+    encrypted_message = b''.join(encrypted_chunks)
+    return base64.b64encode(encrypted_message)
+
+
+def decrypt(data, key, chunk_size=256):
+    """ Decrypt a base64 encoded encrypted message using a key in chunks """
+    encrypted_message = base64.b64decode(data)
+    decrypted_chunks = []
+
+    # Decrypt the encrypted message in chunks
+    for i in range(0, len(encrypted_message), chunk_size):
+        chunk = encrypted_message[i:i + chunk_size]
+        decrypted_chunk = decrypt_chunk(chunk, key)
+        decrypted_chunks.append(decrypted_chunk)
+
+    return b''.join(decrypted_chunks)
 
 
 def load_key(key):

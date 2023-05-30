@@ -11,7 +11,7 @@ class Pinger(threading.Thread):
         self.terminate_flag = threading.Event()
         self.last_ping = time.time()
         self.node_connection = node_connection
-        self.dead_time = 30  # time to disconect from node if not pinged
+        self.dead_time = 999999  # time to disconect from node if not pinged
 
     def stop(self):
         self.terminate_flag.set()

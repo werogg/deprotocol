@@ -1,19 +1,9 @@
-import json
-import time
-
-from deprotocol.network.protocol.payloads.payload import Payload
+from deprotocol.network.protocol.payloads.default_payload import DefaultPayload
 
 
-class MessagePayload(Payload):
+class MessagePayload(DefaultPayload):
 
-    def __init__(self, message):
+    def __init__(self, message, signature):
         super().__init__()
-        self.time = time.time()
         self.message = message
-
-    def serialize(self):
-        payload = {
-            'time': self.time,
-            'message': self.message,
-        }
-        return json.dumps(payload)
+        self.signature = signature

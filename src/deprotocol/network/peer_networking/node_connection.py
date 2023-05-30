@@ -14,6 +14,7 @@ from deprotocol.network.protocol.payloads.handshake_payload import HandshakePayl
 from deprotocol.network.protocol.payloads.message_payload import MessagePayload
 from deprotocol.network.protocol.type import PacketType
 from deprotocol.utils import crypto_funcs as cf
+from deprotocol.utils.message_authenticator import MessageAuthenticator
 
 
 class NodeConnection(threading.Thread):
@@ -53,7 +54,8 @@ class NodeConnection(threading.Thread):
     def send_message(self, message):
         self.send_packet(PacketFactory.create_packet(
             PacketType.MESSAGE,
-            MessagePayload(message).serialize()
+            MessagePayload(message,
+                           MessageAuthenticator.sign_message(message, self.private_key)).serialize()
         ))
 
     def stop(self):
@@ -66,7 +68,7 @@ class NodeConnection(threading.Thread):
         received_packet_handler.handle_received_packet(received_packet)
 
     def run(self):
-        self.sock.settimeout(60.0)
+        self.sock.settimeout(99999.0)
 
         while not self.terminate_flag.is_set():
             if time.time() - self.pinger.last_ping > self.pinger.dead_time:

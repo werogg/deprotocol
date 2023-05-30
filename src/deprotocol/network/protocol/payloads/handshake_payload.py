@@ -1,9 +1,7 @@
-import json
-
-from deprotocol.network.protocol.payloads.payload import Payload
+from deprotocol.network.protocol.payloads.default_payload import DefaultPayload
 
 
-class HandshakePayload(Payload):
+class HandshakePayload(DefaultPayload):
 
     def __init__(self, address, nickname, profile_img, public_key, initiator=False):
         super().__init__()
@@ -12,13 +10,3 @@ class HandshakePayload(Payload):
         self.profile_img = profile_img
         self.public_key = public_key
         self.initiator = initiator
-
-    def serialize(self):
-        payload = {
-            'address': self.address,
-            'nickname': self.nickname,
-            'profile_img': self.profile_img,
-            'public_key': self.public_key,
-            'initiator': self.initiator
-        }
-        return json.dumps(payload)
