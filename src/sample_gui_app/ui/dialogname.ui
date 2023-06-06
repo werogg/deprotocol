@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Dialog</class>
- <widget class="QDialog" name="Dialog">
+ <class>newDialog</class>
+ <widget class="QDialog" name="newDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -48,7 +48,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Name</string>
+    <string>Username</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="lineEdit">
@@ -76,12 +76,12 @@
     <rect>
      <x>40</x>
      <y>110</y>
-     <width>91</width>
+     <width>161</width>
      <height>16</height>
     </rect>
    </property>
    <property name="text">
-    <string>Onion address</string>
+    <string>Profile Image (Future Bytearray)</string>
    </property>
   </widget>
  </widget>
@@ -90,7 +90,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>Dialog</receiver>
+   <receiver>newDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -106,7 +106,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>Dialog</receiver>
+   <receiver>newDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
