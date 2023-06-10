@@ -13,7 +13,7 @@ class Node:
         self.host = host
         self.port = port
         self.onion_address = onion_address
-        self.network_manager = NetworkManager(deprotocol, host, port, onion_address)
+        self.network_manager = NetworkManager(deprotocol, host, port)
         deprotocol.node = self
 
     def start(self):
@@ -30,8 +30,5 @@ class Node:
 
     def get_connected_nodes(self):
         return self.network_manager.node_connections
-
-    def send_message(self, message, node):
-        self.network_manager.send_message(message, node)
 
 

@@ -6,13 +6,12 @@ from deprotocol.settings import NODE_PORT
 
 
 class NetworkManager(threading.Thread):
-    def __init__(self, deprotocol, host='', port=65432, onion_address=''):
+    def __init__(self, deprotocol, host='', port=65432):
         super().__init__()
         self.deprotocol = deprotocol
         self.terminate_flag = threading.Event()
         self.host = host
         self.port = port
-        self.onion_address = onion_address
         self.node_connections = []
         self.banned_address = []
         self.connection_handler = ConnectionHandler(deprotocol, self)
@@ -39,11 +38,15 @@ class NetworkManager(threading.Thread):
             self.node_connections.append(node.connected_host)
 
     def is_valid_address(self, address):
-        if address is self.host or address in self.banned_address:
+        if address == self.deprotocol.node.onion_address:
+            Logger.get_logger().info("You can't connect to yourself.")
+            return False
+        elif address in self.banned_address:
+            Logger.get_logger().info("This address is banned.")
             return False
 
         for node in self.node_connections:
-            if node.connected_host == self.host:
+            if node.connected_address == address:
                 Logger.get_logger().info("Already connected with this node.")
                 return False
 

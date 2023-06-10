@@ -35,6 +35,7 @@ class NodeConnection(threading.Thread):
         self.user = UserHelper.get_user_helper().get_user()
         self.messages = []
         self.packet_handler = PacketHandler(sock, self.private_key)
+        self.closed = False
 
     def start(self):
         self.pinger = Pinger(self)
@@ -50,7 +51,10 @@ class NodeConnection(threading.Thread):
         super().start()
 
     def send_packet(self, packet):
-        self.packet_handler.send_packet(packet)
+        if not self.closed:
+            self.packet_handler.send_packet(packet)
+        else:
+            Logger.get_logger().warning("Trying to send a packet to a closed socket.")
 
     def send_message(self, message):
         self.send_packet(PacketFactory.create_packet(
@@ -63,24 +67,26 @@ class NodeConnection(threading.Thread):
         self.terminate_flag.set()
         self.pinger.stop()
         self.sock.close()
+        self.closed = True
 
     def handle_received_packet(self, received_packet):
         received_packet_handler = ReceivedPacketHandler(self)
         received_packet_handler.handle_received_packet(received_packet)
 
     def run(self):
-        self.sock.settimeout(120.0)
+        self.sock.settimeout(30.0)
 
         while not self.terminate_flag.is_set():
             if time.time() - self.pinger.last_ping > self.pinger.dead_time:
                 self.terminate_flag.set()
-                Logger.get_logger().warning("Node died")
+                Logger.get_logger().warning(f"Socket {self.id} died")
             else:
                 try:
                     received_packet = self.packet_handler.receive_packet()
                     self.handle_received_packet(received_packet)
                 except socket.timeout:
-                    Logger.get_logger().error("NodeConnection: timeout")
+                    Logger.get_logger().error(f"NodeConnection: Socket {self.id} timeout")
+                    self.stop()
                 except Exception as e:
-                    self.terminate_flag.set()
-                    Logger.get_logger().error(f"NodeConnection: Socket has been terminated -> {e}")
+                    Logger.get_logger().error(f"NodeConnection: Socket {self.id} has been terminated -> {e}")
+                    self.stop()

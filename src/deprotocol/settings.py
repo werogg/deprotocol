@@ -27,15 +27,15 @@ system_os = platform.system()
 
 TOR_BINARIES = {
     'Windows': {
-        'url': 'https://dist.torproject.org/torbrowser/12.0.4/tor-expert-bundle-12.0.4-windows-x86_64.tar.gz',
+        'url': 'https://dist.torproject.org/torbrowser/12.0.7/tor-expert-bundle-12.0.7-windows-x86_64.tar.gz',
         'path': 'bin/tor/tor.exe',
     },
     'Linux': {
-        'url': 'https://dist.torproject.org/torbrowser/12.0.4/tor-expert-bundle-12.0.4-linux-x86_64.tar.gz',
+        'url': 'https://dist.torproject.org/torbrowser/12.0.7/tor-expert-bundle-12.0.7-linux-x86_64.tar.gz',
         'path': 'bin/tor/tor',
     },
     'Darwin': {
-        'url': 'https://dist.torproject.org/torbrowser/12.0.4/tor-expert-bundle-12.0.4-osx-x86_64.tar.gz',
+        'url': 'https://dist.torproject.org/torbrowser/12.0.7/tor-expert-bundle-12.0.7-osx-x86_64.tar.gz',
         'path': 'bin/tor/tor',
     }
 }

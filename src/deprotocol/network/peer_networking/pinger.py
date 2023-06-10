@@ -27,6 +27,6 @@ class Pinger(threading.Thread):
             except Exception as exc:
                 Logger.get_logger().error(exc)
             Logger.get_logger().trace('pinger_run: Ping packet sent, sleeping 30 seconds...')
-            time.sleep(30)
+            time.sleep(10)
 
         Logger.get_logger().info("Pinger stopped")
