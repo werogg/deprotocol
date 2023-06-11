@@ -6,11 +6,14 @@ from PyQt5.QtCore import QMetaObject, pyqtSlot, Qt
 from PyQt5.QtCore import Q_ARG
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QLabel
+from PyQt5.QtWidgets import QLineEdit
 from PyQt5.QtWidgets import QListView
 from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtWidgets import QWidget
+from PyQt5 import QtGui
 from PyQt5.uic import loadUi
-from pyqt5_plugins.examplebuttonplugin import QtGui
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 app_dir = os.path.dirname(current_dir)
@@ -73,6 +76,33 @@ class MainUI(QMainWindow):
         self.actionConfig.triggered.connect(self.configPressed)
         self.pushButton.clicked.connect(self.sendMessage)
 
+        self.copyText()
+
+    def copyText(self):
+        text = self.deprotocol.get_address()
+
+        # Create a QMessageBox dialog box
+        msg_box = QMessageBox()
+        msg_box.setWindowTitle("Copy Text")
+        msg_box.setIcon(QMessageBox.Information)
+        msg_box.setStandardButtons(QMessageBox.Ok)
+
+        label = QLabel("Copy your address!")
+        msg_box.layout().addWidget(label)
+
+        text_edit = QLineEdit()
+        text_edit.setText(text)
+        text_edit.setReadOnly(True)
+        text_edit.setMinimumWidth(500)
+        msg_box.layout().addWidget(text_edit)
+
+        msg_box.exec_()
+
+    def closeEvent(self, event):
+        if self.deprotocol:
+            self.deprotocol.stop()
+        event.accept()
+
     def newPressed(self):
         dialog = NewDialog()
         result = dialog.exec_()
@@ -102,7 +132,7 @@ class MainUI(QMainWindow):
 
     def sendMessage(self):
         current_chat = self.tabWidget.currentWidget()
-        time = datetime.datetime.now().strftime("%Y:%m:%d - %H:%M")
+        time = datetime.datetime.now().strftime("%Y/%m/%d - %H:%M")
         dest = self.tabWidget.currentIndex()
         message = self.lineEdit.text()
         self.deprotocol.send_message(dest, message)
@@ -154,6 +184,10 @@ class MainApp:
         self.deprotocol.start()
 
     def load_gui(self):
+        app_name = "DeProtocol - Sample App"
+        QApplication.setOrganizationName("Universitat de Barcelona - Joel Otero Martin")
+        QApplication.setApplicationName(app_name)
+        QApplication.setApplicationDisplayName(app_name)
         self.app = QApplication(sys.argv)
         self.ui = MainUI(self.deprotocol)
         self.ui.show()
