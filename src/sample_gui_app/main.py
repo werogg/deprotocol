@@ -1,4 +1,5 @@
 import datetime
+import os
 import sys
 
 from PyQt5.QtCore import QMetaObject, pyqtSlot, Qt
@@ -10,6 +11,14 @@ from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QWidget
 from PyQt5.uic import loadUi
 from pyqt5_plugins.examplebuttonplugin import QtGui
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+app_dir = os.path.dirname(current_dir)
+deprotocol_dir = os.path.dirname(app_dir)
+
+# Add the necessary directories to the sys.path
+sys.path.insert(0, app_dir)
+sys.path.insert(0, deprotocol_dir)
 
 from deprotocol.api.client import Client
 from deprotocol.event.event_listener import Listener
@@ -58,7 +67,7 @@ class MainUI(QMainWindow):
     def __init__(self, deprotocol):
         super(MainUI, self).__init__()
         self.deprotocol = deprotocol
-        loadUi("ui\main.ui", self)
+        loadUi(os.path.join(current_dir, 'ui', 'main.ui'), self)
 
         self.actionNew.triggered.connect(self.newPressed)
         self.actionConfig.triggered.connect(self.configPressed)
@@ -119,12 +128,13 @@ class MainUI(QMainWindow):
 class NewDialog(QDialog):
     def __init__(self):
         super(NewDialog, self).__init__()
-        loadUi("ui\dialognew.ui", self)
+        loadUi(os.path.join(current_dir, 'ui', 'dialognew.ui'), self)
+
 
 class NameDialog(QDialog):
     def __init__(self):
         super(NameDialog, self).__init__()
-        loadUi("ui\dialogname.ui", self)
+        loadUi(os.path.join(current_dir, 'ui', 'dialogname.ui'), self)
 
 
 class MainApp:

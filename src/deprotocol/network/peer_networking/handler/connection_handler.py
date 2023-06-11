@@ -10,6 +10,8 @@ from deprotocol.app.logger import Logger
 from deprotocol.network.peer_networking.node_connection import NodeConnection
 from deprotocol.network.peer_networking.proxied_socket import Socket
 from deprotocol.settings import PROXY_HOST
+from deprotocol.settings import PROXY_PORT
+from deprotocol.settings import PROXY_TYPE
 
 
 class ConnectionHandler(threading.Thread):
@@ -22,11 +24,7 @@ class ConnectionHandler(threading.Thread):
     def connect_to(self, address, port, initiator=False):
         sock = socks.socksocket()
         sock.settimeout(120)
-        sock.setproxy(socks.PROXY_TYPE_SOCKS5, PROXY_HOST, 9050)
-
-        tor_controller = stem.control.Controller.from_port(port=9051)
-        tor_controller.authenticate()
-        tor_controller.new_circuit()
+        sock.setproxy(PROXY_TYPE, PROXY_HOST, PROXY_PORT)
 
         Logger.get_logger().info(f"connecting to {address} port {port}")
 

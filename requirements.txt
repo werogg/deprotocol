@@ -6,4 +6,4 @@ Requests==2.28.2
 PySocks==1.7.1
 stem==1.8.1
 tqdm==4.65.0
-upnpclient==1.0.3
+PyQt5==5.15.9
