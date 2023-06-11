@@ -24,8 +24,6 @@ class PacketHandler:
 
     def send_packet(self, packet):
         packet.sequence_number = self.sequence_number
-        if packet.type == PacketType.MESSAGE:
-            print("test")
         encoded_packet = self.packet_encoder.encode_packet(packet)
         encrypted_packet = self.packet_encrypter.encrypt_packet(packet, encoded_packet)
         Logger.get_logger().trace(f'send_packet: Sent packet [{packet}]')

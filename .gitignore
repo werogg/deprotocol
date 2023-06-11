@@ -32,6 +32,3 @@ bin/
 # Tor folders
 tor_data/
 tor_hidden_service/
-
-# Tor tar.gz file
-tor.tar.gz
