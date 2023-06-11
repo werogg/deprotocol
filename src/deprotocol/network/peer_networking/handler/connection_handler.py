@@ -3,9 +3,7 @@ import socket
 import threading
 
 import socks
-import stem
 
-from deprotocol.event.events.deprotocol_ready_event import DeProtocolReadyEvent
 from deprotocol.app.logger import Logger
 from deprotocol.network.peer_networking.node_connection import NodeConnection
 from deprotocol.network.peer_networking.proxied_socket import Socket
@@ -29,7 +27,7 @@ class ConnectionHandler(threading.Thread):
         Logger.get_logger().info(f"connecting to {address} port {port}")
 
         try:
-            sock.connect((address, 80))
+            sock.connect((address, port))
         except Exception as exc:
             Logger.get_logger().error(exc)
 

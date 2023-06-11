@@ -2,7 +2,7 @@ import threading
 
 from deprotocol.app.logger import Logger
 from deprotocol.network.peer_networking.handler.connection_handler import ConnectionHandler
-from deprotocol.settings import NODE_PORT
+from deprotocol.settings import HIDDEN_SERVICE_VIRTUAL_PORT
 
 
 class NetworkManager(threading.Thread):
@@ -24,7 +24,7 @@ class NetworkManager(threading.Thread):
         self.connection_handler.stop()
         self.terminate_flag.set()
 
-    def connect_to(self, address, port=NODE_PORT):
+    def connect_to(self, address, port=HIDDEN_SERVICE_VIRTUAL_PORT):
         if self.is_valid_address(address):
             node_connection = self.connection_handler.connect_to(address, port, True)
             self.node_connections.append(node_connection)

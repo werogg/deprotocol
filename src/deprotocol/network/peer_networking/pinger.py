@@ -11,7 +11,8 @@ class Pinger(threading.Thread):
         self.terminate_flag = threading.Event()
         self.last_ping = time.time()
         self.node_connection = node_connection
-        self.dead_time = 120  # time to disconect from node if not pinged
+        self.dead_time = 120  # time to disconnect from node if not pinged
+        self.send_time = 10
 
     def stop(self):
         self.terminate_flag.set()
@@ -26,7 +27,7 @@ class Pinger(threading.Thread):
                 self.node_connection.packet_handler.send_packet(ping_packet)
             except Exception as exc:
                 Logger.get_logger().error(exc)
-            Logger.get_logger().trace('pinger_run: Ping packet sent, sleeping 30 seconds...')
-            time.sleep(10)
+            Logger.get_logger().trace(f'pinger_run: Ping packet sent, sleeping {self.send_time} seconds...')
+            time.sleep(self.send_time)
 
         Logger.get_logger().info("Pinger stopped")
