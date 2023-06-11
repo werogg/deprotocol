@@ -27,7 +27,7 @@ class ConnectionHandler(threading.Thread):
         Logger.get_logger().info(f"connecting to {address} port {port}")
 
         try:
-            sock.connect((address, port))
+            sock.connect((address, 80))
         except Exception as exc:
             Logger.get_logger().error(exc)
 

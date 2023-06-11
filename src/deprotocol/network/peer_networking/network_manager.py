@@ -3,10 +3,12 @@ import threading
 from deprotocol.app.logger import Logger
 from deprotocol.network.peer_networking.handler.connection_handler import ConnectionHandler
 from deprotocol.settings import HIDDEN_SERVICE_VIRTUAL_PORT
+from deprotocol.settings import NODE_HOST
+from deprotocol.settings import NODE_PORT
 
 
 class NetworkManager(threading.Thread):
-    def __init__(self, deprotocol, host='', port=65432):
+    def __init__(self, deprotocol, host=NODE_HOST, port=NODE_PORT):
         super().__init__()
         self.deprotocol = deprotocol
         self.terminate_flag = threading.Event()
