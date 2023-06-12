@@ -28,16 +28,16 @@ class ConnectionHandler(threading.Thread):
 
         try:
             sock.connect((address, 80))
+
+            Logger.get_logger().info(
+                f"NodeConnection.send: Started with client ({address}) ':{str(port)}'"
+            )
+            new_connection = self.create_new_connection(self.deprotocol, sock, initiator)
+            new_connection.start()
+
+            return new_connection
         except Exception as exc:
             Logger.get_logger().error(exc)
-
-        Logger.get_logger().info(
-            f"NodeConnection.send: Started with client ({address}) ':{str(port)}'"
-        )
-        new_connection = self.create_new_connection(self.deprotocol, sock, initiator)
-        new_connection.start()
-
-        return new_connection
 
     def run(self):
         with Socket(self.network_manager.host, self.network_manager.port) as sock:

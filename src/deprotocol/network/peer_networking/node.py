@@ -2,6 +2,7 @@ import threading
 
 from deprotocol.event.events.deprotocol_ready_event import DeProtocolReadyEvent
 from deprotocol.network.peer_networking.network_manager import NetworkManager
+from deprotocol.settings import HIDDEN_SERVICE_VIRTUAL_PORT
 from deprotocol.settings import NODE_PORT
 
 
@@ -22,7 +23,7 @@ class Node:
     def stop(self):
         self.network_manager.stop()
 
-    def connect_to(self, host, port=NODE_PORT):
+    def connect_to(self, host, port=HIDDEN_SERVICE_VIRTUAL_PORT):
         self.network_manager.connect_to(host, port)
 
     def disconnect_from(self, node):
